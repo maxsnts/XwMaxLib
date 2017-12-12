@@ -87,7 +87,7 @@ namespace Tester
                 sql.Mode = XwDbMode.DataSet;
                 sql.AddParameter("@Name", "%C%");
                 sql.ExecuteSP("TestSP");
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
                 while (sql.Read())
                 {
                     Console.WriteLine(sql.Value("Name").ToString());
@@ -103,7 +103,7 @@ namespace Tester
                 sql.Mode = XwDbMode.DataReader;
                 sql.AddParameter("@Name", "%C%");
                 sql.ExecuteSP("TestSP");
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
                 while (sql.Read())
                 {
                     Console.WriteLine(sql.Value("Name").ToString());
@@ -118,7 +118,7 @@ namespace Tester
             {
                 sql.AddParameter("@Name", "%A%");
                 sql.ExecuteTX("SELECT Name FROM Tester WHERE Name LIKE @Name");
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
                 
                 while (sql.Read())
                     Console.WriteLine(sql.Value("Name").ToString());
@@ -139,7 +139,7 @@ namespace Tester
                 sql.Mode = XwDbMode.DataSet;
                 sql.AddParameter("$Name", "%C%");
                 sql.ExecuteSP("TestSP");
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
                 while (sql.Read())
                 {
                     Console.WriteLine(sql.Value("Name").ToString());
@@ -155,7 +155,7 @@ namespace Tester
                 sql.Mode = XwDbMode.DataReader;
                 sql.AddParameter("$Name", "%C%");
                 sql.ExecuteSP("TestSP");
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
                 while (sql.Read())
                 {
                     Console.WriteLine(sql.Value("Name").ToString());
@@ -170,7 +170,7 @@ namespace Tester
             {
                 sql.AddParameter("@Name", "%A%");
                 sql.ExecuteTX("SELECT * FROM Tester WHERE Name LIKE @Name");
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
                 while (sql.Read())
                 {
                     Console.WriteLine(sql.Value("Name").ToString());
@@ -187,7 +187,7 @@ namespace Tester
                 sql.AddParameter("ID", 12);
                 sql.AddParameter("@Name", "POIS");
                 sql.ExecuteMK();
-                Console.WriteLine(sql.GetTextCommand());
+                Console.WriteLine(sql.GetDebugCommand());
             }
         }
 
@@ -231,7 +231,7 @@ namespace Tester
                     sql.Mode = XwDbMode.DataReader;
                     sql.AddParameter("$Name", "%C%");
                     sql.ExecuteSP("TestSP");
-                    Console.WriteLine(sql.GetTextCommand());
+                    Console.WriteLine(sql.GetDebugCommand());
                     while (sql.Read())
                     {
 

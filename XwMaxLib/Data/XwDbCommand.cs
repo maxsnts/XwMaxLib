@@ -49,7 +49,7 @@ namespace XwMaxLib.Data
         private string StringLiteralPrefix = string.Empty;
         private MakeType Maketype;
         private string MakeTable = string.Empty;
-        private string LastExecutedCommand = string.Empty;
+        private string DebugCommand = string.Empty;
         
         //Use this to set the mode only once for all connections
         public static XwDbMode DefaultMode = XwDbMode.DataReader;
@@ -576,8 +576,9 @@ namespace XwMaxLib.Data
             try
             {
                 //??? before open...
-                _Command.CommandText = command;
-                _Command.Connection = _Connection;
+                //I dont know why, so i commented it, let see
+                //_Command.CommandText = command;
+                //_Command.Connection = _Connection;
 
                 Open();
 
@@ -596,10 +597,11 @@ namespace XwMaxLib.Data
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
 
-                LastExecutedCommand = command;
-                _Command.CommandText = command;
                 _Command.Connection = _Connection;
+                _Command.CommandText = command;
 
+                DebugCommand = GetTextCommand();
+                
                 switch (Mode)
                 {
                     case XwDbMode.DataSet:
@@ -680,7 +682,16 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public String GetTextCommand()
+        public String GetDebugCommand()
+        {
+            if (DebugCommand == string.Empty)
+                return "DebugCommand is Empty, nothing was executed yet";
+
+            return DebugCommand;
+        }
+
+        //********************************************************************************
+        private String GetTextCommand()
         {
             string command = string.Empty;
             if (_Command.CommandType == CommandType.StoredProcedure)
@@ -724,8 +735,6 @@ namespace XwMaxLib.Data
                 }
             }
 
-            if (command == "")
-                return LastExecutedCommand;
             return command;
         }
 
