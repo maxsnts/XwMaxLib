@@ -1,13 +1,6 @@
-﻿using XwMaxLib;
-using XwMaxLib.Data;
-using XwMaxLib.Diagnostics;
-using XwMaxLib.DNS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-using System.Text;
+﻿using System;
 using System.Threading;
+using XwMaxLib.Diagnostics;
 
 namespace Tester
 {

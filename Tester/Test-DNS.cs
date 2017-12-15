@@ -1,10 +1,5 @@
-﻿using XwMaxLib.Data;
+﻿using System;
 using XwMaxLib.DNS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-using System.Text;
 
 namespace Tester
 {

@@ -1,15 +1,4 @@
-﻿using XwMaxLib;
-using XwMaxLib.Crypto;
-using XwMaxLib.Data;
-using XwMaxLib.Diagnostics;
-using XwMaxLib.DNS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
+﻿using System;
 
 namespace Tester
 {

@@ -1,14 +1,5 @@
-﻿using XwMaxLib;
+﻿using System;
 using XwMaxLib.Data;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using XwMaxLib.Extensions;
-using System.Data.Common;
 
 namespace Tester
 {

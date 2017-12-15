@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{070756EF-E692-4244-8F07-8FF9995231F8}</ProjectGuid>
+    <ProjectGuid>{4E1CD22D-0542-4E3B-9683-FB5478851176}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XwMaxLib</RootNamespace>
@@ -26,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Converter\Base32.cs" />
@@ -54,7 +56,6 @@
     <Compile Include="IO\Zip.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Mail.cs" />
-    <Compile Include="Misc.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="Diagnostics\Profiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,7 +65,6 @@
     <Content Include="DLL\DigestAuthMod.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

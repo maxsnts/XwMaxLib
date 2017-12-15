@@ -11,7 +11,7 @@ namespace XwMaxLib.Log
             string sFile = folder;
             if (!Directory.Exists(sFile))
                 Directory.CreateDirectory(sFile);
-            sFile = String.Format(@"{0}\{1}.log", sFile, DateTime.Now.ToString("yyyy-MM-dd"));
+            sFile = Path.Combine(sFile, $"{DateTime.Now.ToString("yyyy-MM-dd")}.log");
             File.AppendAllText(sFile, (sMsg + "\r\n"), System.Text.Encoding.Default);
         }
     }

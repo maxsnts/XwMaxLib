@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{97C51524-6965-4B65-A7CB-E22FE0FD3160}</ProjectGuid>
+    <ProjectGuid>{7420462E-7339-48E6-95C9-C84290E8C461}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tester</RootNamespace>
@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XwMaxLib\XwMaxLib.csproj">
-      <Project>{070756ef-e692-4244-8f07-8ff9995231f8}</Project>
+      <Project>{4E1CD22D-0542-4E3B-9683-FB5478851176}</Project>
       <Name>XwMaxLib</Name>
     </ProjectReference>
   </ItemGroup>
