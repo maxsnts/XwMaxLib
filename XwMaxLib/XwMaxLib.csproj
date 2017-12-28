@@ -51,6 +51,7 @@
     <Compile Include="Extentions\MyExtensionException.cs" />
     <Compile Include="Extentions\MyExtensionMatch.cs" />
     <Compile Include="Extentions\MyExtensionObject.cs" />
+    <Compile Include="Extentions\MyExtensionRectangle.cs" />
     <Compile Include="Extentions\MyExtensionString.cs" />
     <Compile Include="IO\Drive.cs" />
     <Compile Include="IO\Zip.cs" />

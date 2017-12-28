@@ -50,6 +50,7 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,6 +63,13 @@
     <Compile Include="Test-Crypto.cs" />
     <Compile Include="Test-DNS.cs" />
     <Compile Include="Test-Profiler.cs" />
+    <Compile Include="Test-Rectangle-Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Test-Rectangle-Form.Designer.cs">
+      <DependentUpon>Test-Rectangle-Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Test-Rectangle.cs" />
     <Compile Include="Test-XwDbCommand.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +81,11 @@
       <Project>{4E1CD22D-0542-4E3B-9683-FB5478851176}</Project>
       <Name>XwMaxLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Test-Rectangle-Form.resx">
+      <DependentUpon>Test-Rectangle-Form.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,6 +19,7 @@ namespace Tester
                 Console.WriteLine("2 - Test DNS");
                 Console.WriteLine("3 - Test Profiler");
                 Console.WriteLine("4 - Test Crypto");
+                Console.WriteLine("5 - Test Rectangle");
                 Console.ResetColor();
                 Console.Write("Select option: ");
                 string option = Console.ReadLine().Trim();
@@ -41,6 +42,9 @@ namespace Tester
                             break;
                         case "4":
                             MenuCrypto();
+                            break;
+                        case "5":
+                            MenuRectangle();
                             break;
                         default:
                             {
