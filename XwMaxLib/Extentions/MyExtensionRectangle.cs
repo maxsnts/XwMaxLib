@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
 
-namespace XwMaxLib.Extentions
+namespace XwMaxLib.Extensions
 {
-    public static class MyExtentionRectangle
+    public static class MyExtensionRectangle
     {
         public static int GetMidX(this Rectangle rect)
         {
