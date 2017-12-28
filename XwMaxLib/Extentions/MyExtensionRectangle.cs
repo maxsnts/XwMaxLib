@@ -104,10 +104,10 @@ namespace XwMaxLib.Extensions
             return rect;
         }
 
-        public static Rectangle InflatePercentage(this Rectangle rect, int percent)
+        public static Rectangle InflatePercentage(this Rectangle rect, float percent)
         {
-            float infX = (rect.Width * percent / 100) / 2;
-            float infY = (rect.Height * percent / 100) / 2 ;
+            float infX = ((float)rect.Width * percent / 100f) / 2;
+            float infY = ((float)rect.Height * percent / 100f) / 2 ;
             rect.Inflate((int)infX, (int)infY);
             return rect;
         }
