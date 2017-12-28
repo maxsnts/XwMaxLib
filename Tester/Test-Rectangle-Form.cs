@@ -36,11 +36,14 @@ namespace Tester
 
             Rectangle bigVRect = new Rectangle(150, 150, 2000, 3000);
             Rectangle smallVRect = new Rectangle(600, 600, 200, 300);
-            
+
+            Rectangle percent = new Rectangle(600, 200, 100, 200);
+
             Rectangle canvas = this.ClientRectangle;
             canvas.Inflate(-20, -20);
-            
+
             //center
+            percent = percent.Center(canvas);
             bigHRect = bigHRect.Center(canvas);
             //smallHRect = smallHRect.Center(canvas);
             bigVRect = bigVRect.Center(canvas);
@@ -58,6 +61,8 @@ namespace Tester
             bigVRect = bigVRect.AlignRight(canvas);
             bigVRect = bigVRect.AlignBottom(canvas);
             smallVRect = smallVRect.AlignMiddle(canvas);
+
+            percent = percent.InflatePercentage(50);
 
             //draw
             g.DrawRectangle(Pens.Fuchsia, canvas);
@@ -79,6 +84,10 @@ namespace Tester
             g.DrawRectangle(Pens.Red, smallVRect);
             g.DrawLine(Pens.Red, smallVRect.GetTopLeft(), smallVRect.GetBottomRight());
             g.DrawLine(Pens.Red, smallVRect.GetBottomLeft(), smallVRect.GetTopRight());
+
+            g.DrawRectangle(Pens.White, percent);
+            g.DrawLine(Pens.White, percent.GetTopLeft(), percent.GetBottomRight());
+            g.DrawLine(Pens.White, percent.GetBottomLeft(), percent.GetTopRight());
         }
     }
 }

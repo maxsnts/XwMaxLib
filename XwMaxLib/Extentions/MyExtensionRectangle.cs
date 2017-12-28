@@ -103,5 +103,13 @@ namespace XwMaxLib.Extensions
             rect.Offset(0, withRect.GetCenter().Y - rect.GetCenter().Y);
             return rect;
         }
+
+        public static Rectangle InflatePercentage(this Rectangle rect, int percent)
+        {
+            float infX = (rect.Width * percent / 100) / 2;
+            float infY = (rect.Height * percent / 100) / 2 ;
+            rect.Inflate((int)infX, (int)infY);
+            return rect;
+        }
     }
 }
