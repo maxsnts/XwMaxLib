@@ -897,6 +897,34 @@ namespace XwMaxLib.Data
                 return true;
             return false;
         }
+
+        //********************************************************************************
+        //Oh boy this is bad. Have to find another way to do this.
+        public bool ColumnExists(string tableName, string columnName)
+        {
+            string command = string.Empty;
+            switch (_Provider)
+            {
+                case XwDbProvider.SQLITE:
+                    {
+                        command = $"SELECT {columnName} FROM {tableName} LIMIT 0";
+                    }
+                    break;
+                default:
+                    throw new Exception("TableExists is not implemented for this provider");
+            }
+
+            ResetCommand();
+            try
+            {
+                ExecuteTX(command, true);
+                return true;
+            }
+            catch
+            { }
+            
+            return false;
+        }
     }
 
     //**************************************************************************************************************

@@ -26,17 +26,19 @@ namespace XwMaxLib.Crypto
         public XwAsymCrypto()
         {
             throw new Exception("Work in progress... maybe!");
-            PrepareObject();
+            //PrepareObject();
         }
 
         //********************************************************************************
         public XwAsymCrypto(Int32 keySize, XwAsymCryptoPrivider providerType, HashAlgorithmName hashAlgorithm)
         {
             throw new Exception("Work in progress... maybe!");
+            /*
             KeySize = keySize;
             ProviderType = providerType;
             HashAlgorithm = hashAlgorithm;
             PrepareObject();
+            */
         }
 
         //********************************************************************************
