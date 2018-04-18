@@ -45,6 +45,41 @@ namespace XwMaxLib.Mail
             oSMTP.Send(oMail);
         }
 
+        //*************************************************************************************************
+        public static void SendMail(string fromName, string fromMail, string to, string subject, string message, bool isHtml, string smptServer, string environment = "", string smtpUser = "", string smtpPass = "")
+        {
+            if (environment /*ConfigurationManager.AppSettings["ENVIRONMENT"]*/ == "DEVELOPMENT")
+                fromName = "DEV - " + fromName;
+
+            SmtpClient oSMTP = new SmtpClient();
+            oSMTP.Host = smptServer; // ConfigurationManager.AppSettings["SMTPSERVER"];
+
+            string from = fromName + "<" + fromMail + ">";
+
+            if (message.Contains("EXCEPTION:"))
+            {
+                int i = message.IndexOf("EXCEPTION:", StringComparison.Ordinal);
+                i = message.IndexOf("\n", i + 1, StringComparison.Ordinal);
+                int n = message.IndexOf("\n", i + 1, StringComparison.Ordinal);
+                subject += ": " + message.Substring(i + 1, n - i) + "...";
+            }
+
+            subject = subject.Replace("\n", " ");
+            subject = subject.Replace("\r", " ");
+
+            MailMessage oMail = new MailMessage(from, to, subject, message);
+            oMail.IsBodyHtml = isHtml;
+            oMail.BodyEncoding = System.Text.Encoding.UTF8;
+
+            //string username = ConfigurationManager.AppSettings["SMTPUSER"];
+            //string password = ConfigurationManager.AppSettings["SMTPPASSWORD"];
+
+            if (!String.IsNullOrEmpty(smtpUser))
+                oSMTP.Credentials = new NetworkCredential(smtpUser, smtpPass);
+
+            oSMTP.Send(oMail);
+        }
+
         //**********************************************************************************************************************
         public static bool IsMailValid(string address)
         {
