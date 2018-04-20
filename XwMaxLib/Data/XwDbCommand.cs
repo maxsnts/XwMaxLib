@@ -29,9 +29,9 @@ namespace XwMaxLib.Data
     public enum MakeType
     {
         REPLACE,
-        UPSERT
-        //INSERT,
-        //UPDATE,
+        UPSERT,
+        INSERT,
+        UPDATE
         //DELETE
     }
 
@@ -49,6 +49,7 @@ namespace XwMaxLib.Data
         private string StringLiteralPrefix = string.Empty;
         private MakeType Maketype;
         private string MakeTable = string.Empty;
+        private string MakeWhere = string.Empty;
         private string DebugCommand = string.Empty;
         
         //Use this to set the mode only once for all connections
@@ -100,13 +101,11 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public void Make(MakeType type, string table)
+        public void Make(MakeType type, string table, string where = "")
         {
-            if (_Provider != XwDbProvider.MYSQL)
-                throw new Exception("Implemented only for MySQL... for now!");
-
             Maketype = type;
             MakeTable = table;
+            MakeWhere = where;
         }
 
         //*************************************************************************************************
@@ -118,17 +117,60 @@ namespace XwMaxLib.Data
             {
                 case MakeType.REPLACE:
                     {
+                        if (_Provider != XwDbProvider.MYSQL)
+                            throw new Exception("REPLACE is implemented only for MySQL");
+
                         query = $"REPLACE INTO {MakeTable} SET ";
                         foreach (DbParameter parameter in _Command.Parameters)
                         {
                             string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
                             query += $"{param}=@{param},";
                         }
+
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
                     }
                     break;
                 case MakeType.UPSERT:
+                    {
+                        if (_Provider != XwDbProvider.MYSQL)
+                            throw new Exception("UPSERT is implemented only for MySQL");
+
+                        query = $"INSERT INTO {MakeTable} (";
+
+                        foreach (DbParameter parameter in _Command.Parameters)
+                        {
+                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                            query += $"{param},";
+                        }
+
+                        if (query.EndsWith(","))
+                            query = query.Remove(query.Length - 1, 1);
+
+                        query += ") VALUES (";
+
+                        foreach (DbParameter parameter in _Command.Parameters)
+                        {
+                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                            query += $"@{param},";
+                        }
+
+                        if (query.EndsWith(","))
+                            query = query.Remove(query.Length - 1, 1);
+
+                        query += ") ON DUPLICATE KEY UPDATE ";
+
+                        foreach (DbParameter parameter in _Command.Parameters)
+                        {
+                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                            query += $"{param}=@{param},";
+                        }
+
+                        if (query.EndsWith(","))
+                            query = query.Remove(query.Length - 1, 1);
+                    }
+                    break;
+                case MakeType.INSERT:
                     {
                         query = $"INSERT INTO {MakeTable} (";
 
@@ -141,7 +183,7 @@ namespace XwMaxLib.Data
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
 
-                        query += String.Format(") VALUES (");
+                        query += ") VALUES (";
 
                         foreach (DbParameter parameter in _Command.Parameters)
                         {
@@ -152,7 +194,12 @@ namespace XwMaxLib.Data
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
 
-                        query += String.Format(") ON DUPLICATE KEY UPDATE ");
+                        query += ")";
+                    }
+                    break;
+                case MakeType.UPDATE:
+                    {
+                        query = $"UPDATE {MakeTable} SET ";
 
                         foreach (DbParameter parameter in _Command.Parameters)
                         {
@@ -162,13 +209,15 @@ namespace XwMaxLib.Data
 
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
+
+                        query = $" WHERE {MakeWhere}";
                     }
                     break;
                 default:
                     throw new Exception("Unknown MakeType");
             }
-
-            return query + ";\n";
+            
+            return query;
         }
 
         //********************************************************************************
