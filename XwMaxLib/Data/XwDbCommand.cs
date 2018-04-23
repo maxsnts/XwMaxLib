@@ -133,8 +133,8 @@ namespace XwMaxLib.Data
                     break;
                 case MakeType.UPSERT:
                     {
-                        if (_Provider != XwDbProvider.MYSQL)
-                            throw new Exception("UPSERT is implemented only for MySQL");
+                        if (_Provider != XwDbProvider.MYSQL && _Provider != XwDbProvider.SQLITE)
+                            throw new Exception("UPSERT is implemented only for MySQL and SQLite");
 
                         query = $"INSERT INTO {MakeTable} (";
 
@@ -158,16 +158,26 @@ namespace XwMaxLib.Data
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
 
-                        query += ") ON DUPLICATE KEY UPDATE ";
+                        query += ") ";
 
-                        foreach (DbParameter parameter in _Command.Parameters)
+                        if (_Provider == XwDbProvider.MYSQL)
                         {
-                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                            query += $"{param}=@{param},";
+                            query += " ON DUPLICATE KEY UPDATE ";
+
+                            foreach (DbParameter parameter in _Command.Parameters)
+                            {
+                                string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                                query += $"{param}=@{param},";
+                            }
+
+                            if (query.EndsWith(","))
+                                query = query.Remove(query.Length - 1, 1);
                         }
 
-                        if (query.EndsWith(","))
-                            query = query.Remove(query.Length - 1, 1);
+                        if (_Provider == XwDbProvider.SQLITE)
+                        {
+                            query.Replace("INSERT INTO", "INSERT OR REPLACE INTO");
+                        }
                     }
                     break;
                 case MakeType.INSERT:
@@ -210,7 +220,7 @@ namespace XwMaxLib.Data
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
 
-                        query = $" WHERE {MakeWhere}";
+                        query += $" WHERE {MakeWhere}";
                     }
                     break;
                 default:
@@ -508,6 +518,10 @@ namespace XwMaxLib.Data
                     {
                         if (_Command == null)
                             _Command = new SQLiteCommand();
+
+                        if (Regex.IsMatch(name, @"^\w"))
+                            name = "@" + name;
+
                         SQLiteParameter param = new SQLiteParameter(name, val.GetSQLiteType());
                         param.Value = val.ToDbValue();
                         _Command.Parameters.Add(param);
