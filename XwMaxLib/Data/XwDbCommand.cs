@@ -316,36 +316,34 @@ namespace XwMaxLib.Data
             }
         }
 
+        #region CLEANUP
         //********************************************************************************
         ~XwDbCommand()
         {
             Dispose(false);
         }
-        
-        //********************************************************************************
-        private bool disposed = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    // called via myClass.Dispose(). 
-                    // OK to use any private object references
-                }
-
-                disposed = true;
-            }
-        }
 
         //********************************************************************************
         public void Dispose()
         {
-            this.Close(CloseByKilling);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         //********************************************************************************
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    Close(CloseByKilling);
+                }
+            }
+        }
+        
+        //********************************************************************************
+        public bool IsDisposed { get; protected set; }
         public void Close(bool kill = false)
         {
             if (_DataSet != null)
@@ -390,6 +388,8 @@ namespace XwMaxLib.Data
                 _Connection.Dispose();
                 _Connection = null;
             }
+
+            IsDisposed = true;
         }
 
         //********************************************************************************
@@ -397,6 +397,7 @@ namespace XwMaxLib.Data
         {
             Close(true);
         }
+        #endregion
 
         //********************************************************************************
         public void AddParameter(string name, Boolean value, bool allowNull = false, bool nullIf = false)
