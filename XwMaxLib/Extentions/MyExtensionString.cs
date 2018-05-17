@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -231,6 +233,19 @@ namespace XwMaxLib.Extensions
             }
 
             return defaultValue;
+        }
+
+        //*************************************************************************************************
+        public static string GetUnixParentPath(this string s)
+        {
+            string parent = "/";
+            string[] parts = s.Split("/");
+            if (parts.Length > 1)
+            {
+                for (int i = 0; i < parts.Length - 1; i++)
+                    parent += $"/{parts[i]}";
+            }
+            return parent.Replace("//", "/");
         }
     }
 }
