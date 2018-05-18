@@ -38,6 +38,12 @@
     <Prefer32Bit>false</Prefer32Bit>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>XwMaxLib.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Converter\Base32.cs" />
     <Compile Include="Crypto\XwAsymCrypto.cs" />
@@ -47,6 +53,7 @@
     <Compile Include="Diagnostics\ScopedStopwatch.cs" />
     <Compile Include="DnsLookup.cs" />
     <Compile Include="DnsMsServer.cs" />
+    <Compile Include="Extentions\MyExtensionControl.cs" />
     <Compile Include="Extentions\MyExtensionDateTime.cs" />
     <Compile Include="Extentions\MyExtensionException.cs" />
     <Compile Include="Extentions\MyExtensionMatch.cs" />
@@ -60,6 +67,96 @@
     <Compile Include="Net.cs" />
     <Compile Include="Diagnostics\Profiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ColorComboBox\ColorComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ColorComboBox\ColorComboBox.Designer.cs">
+      <DependentUpon>ColorComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DialogHeader\DialogHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\DialogHeader\DialogHeader.Designer.cs">
+      <DependentUpon>DialogHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DividerPanel\DividerPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\DividerPanel\DividerPanelDesigner.cs" />
+    <Compile Include="UI\FATabStrip\BaseStyledPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\FATabStrip\CollectionWithEvents.cs" />
+    <Compile Include="UI\FATabStrip\Delegates.cs" />
+    <Compile Include="UI\FATabStrip\Enums.cs" />
+    <Compile Include="UI\FATabStrip\FATabStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\FATabStrip\FATabStripCloseButton.cs" />
+    <Compile Include="UI\FATabStrip\FATabStripDesigner.cs" />
+    <Compile Include="UI\FATabStrip\FATabStripItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\FATabStrip\FATabStripItemCollection.cs" />
+    <Compile Include="UI\FATabStrip\FATabStripItemDesigner.cs" />
+    <Compile Include="UI\FATabStrip\FATabStripMenuGlyph.cs" />
+    <Compile Include="UI\FATabStrip\ICaptionSupport.cs" />
+    <Compile Include="UI\KRBTabControl\BlackStyles.cs" />
+    <Compile Include="UI\KRBTabControl\BlueStyles.cs" />
+    <Compile Include="UI\KRBTabControl\Enum.cs" />
+    <Compile Include="UI\KRBTabControl\GrayStyles.cs" />
+    <Compile Include="UI\KRBTabControl\KRBProfessionalColors.cs" />
+    <Compile Include="UI\KRBTabControl\KRBTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\KRBTabControl\KRBTabResources.Designer.cs" />
+    <Compile Include="UI\KRBTabControl\Office2007.cs" />
+    <Compile Include="UI\KRBTabControl\User32.cs" />
+    <Compile Include="UI\ListItem.cs" />
+    <Compile Include="UI\LoadingCircle\LoadingCircle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\LoadingCircle\LoadingCircle.Designer.cs">
+      <DependentUpon>LoadingCircle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\LoadingCircle\LoadingCircleToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IAdviseSink.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IContextMenu.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IDataObject.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IDragSourceHelper.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IDropSource.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IDropTarget.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IDropTargetHelper.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IEnumFORMATETC.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IEnumIDList.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IEnumSTATSTG.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IShellExtInit.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IShellFolder.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IStorage.cs" />
+    <Compile Include="UI\Shell\ShellAPI\Interfaces\IStream.cs" />
+    <Compile Include="UI\Shell\ShellAPI\PIDL.cs" />
+    <Compile Include="UI\Shell\ShellAPI\ShellAPI.cs" />
+    <Compile Include="UI\Shell\ShellAPI\ShellBrowser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Shell\ShellAPI\ShellBrowserUpdater.cs" />
+    <Compile Include="UI\Shell\ShellAPI\ShellHelper.cs" />
+    <Compile Include="UI\Shell\ShellAPI\ShellImageList.cs" />
+    <Compile Include="UI\Shell\ShellAPI\ShellItem.cs" />
+    <Compile Include="UI\Shell\XwShellTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TabStrip\TabStrip.cs" />
+    <Compile Include="UI\XwListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WMI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +165,53 @@
     <Content Include="DLL\SQLite\System.Data.SQLite.dll" />
     <Content Include="DLL\SQLite\x64\SQLite.Interop.dll" />
     <Content Include="DLL\SQLite\x86\SQLite.Interop.dll" />
+    <Content Include="Resources\cat_right.gif" />
+    <Content Include="Resources\Caution.ico" />
+    <Content Include="Resources\DownArrow.ico" />
+    <None Include="Resources\information_italic.png" />
+    <Content Include="Resources\LeftDownBlackGlass.png" />
+    <Content Include="Resources\LeftDownKRBBlue.png" />
+    <Content Include="Resources\LeftDownOfficeBlue.png" />
+    <Content Include="Resources\LeftDownOfficeOlive.png" />
+    <Content Include="Resources\LeftDownOfficeSilver.png" />
+    <Content Include="Resources\LeftHoverBlackGlass.png" />
+    <Content Include="Resources\LeftHoverKRBBlue.png" />
+    <Content Include="Resources\LeftHoverOfficeBlue.png" />
+    <Content Include="Resources\LeftHoverOfficeOlive.png" />
+    <Content Include="Resources\LeftHoverOfficeSilver.png" />
+    <Content Include="Resources\LeftNormalBlackGlass.png" />
+    <Content Include="Resources\LeftNormalKRBBlue.png" />
+    <Content Include="Resources\LeftNormalOfficeBlue.png" />
+    <Content Include="Resources\LeftNormalOfficeOlive.png" />
+    <Content Include="Resources\LeftNormalOfficeSilver.png" />
+    <Content Include="Resources\main_nav_bkgrnd.gif" />
+    <Content Include="Resources\menu_bg.png" />
+    <Content Include="Resources\nav_gradient.jpg" />
+    <Content Include="Resources\RightDownBlackGlass.png" />
+    <Content Include="Resources\RightDownKRBBlue.png" />
+    <Content Include="Resources\RightDownOfficeBlue.png" />
+    <Content Include="Resources\RightDownOfficeOlive.png" />
+    <Content Include="Resources\RightDownOfficeSilver.png" />
+    <Content Include="Resources\RightHoverBlackGlass.png" />
+    <Content Include="Resources\RightHoverKRBBlue.png" />
+    <Content Include="Resources\RightHoverOfficeBlue.png" />
+    <Content Include="Resources\RightHoverOfficeOlive.png" />
+    <Content Include="Resources\RightHoverOfficeSilver.png" />
+    <Content Include="Resources\RightNormalBlackGlass.png" />
+    <Content Include="Resources\RightNormalKRBBlue.png" />
+    <Content Include="Resources\RightNormalOfficeBlue.png" />
+    <Content Include="Resources\RightNormalOfficeOlive.png" />
+    <Content Include="Resources\RightNormalOfficeSilver.png" />
+    <Content Include="Resources\step-toolbar-bg.png" />
+    <Content Include="Resources\TabHover.png" />
+    <Content Include="Resources\table_bg.jpg" />
+    <Content Include="Resources\TabNormal.png" />
+    <Content Include="Resources\TabPressed.png" />
+    <Content Include="Resources\th_bg_na.gif" />
+    <Content Include="Resources\tile_sub.gif" />
+    <Content Include="Resources\titlebarBlit.png" />
+    <Content Include="Resources\UpArrow.ico" />
+    <None Include="Resources\XWega.Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -85,6 +229,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\SQLite\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.IO.Compression" />
@@ -93,7 +238,28 @@
     <Reference Include="System.Runtime" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ColorComboBox\ColorComboBox.resx">
+      <DependentUpon>ColorComboBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DialogHeader\DialogHeader.resx">
+      <DependentUpon>DialogHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\KRBTabControl\KRBTabResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>KRBTabResources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="XwMaxLib.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

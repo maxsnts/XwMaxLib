@@ -73,12 +73,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XwMaxLib\XwMaxLib.csproj">
-      <Project>{4E1CD22D-0542-4E3B-9683-FB5478851176}</Project>
-      <Name>XwMaxLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Test-Rectangle-Form.resx">
       <DependentUpon>Test-Rectangle-Form.cs</DependentUpon>
     </EmbeddedResource>

@@ -46,5 +46,21 @@ namespace XwMaxLib.IO
             return GetDiskFreeSpace(path) / 1024 / 1024;
         }
 
+        //*************************************************************************************************
+        public static string GetFileSize(double byteCount)
+        {
+            string size = "0 Bytes";
+            if (byteCount >= (1024 * 1024 * 1024))
+                size = String.Format("{0:##.00}", byteCount / (1024 * 1024 * 1024)) + " Gb";
+            else if (byteCount >= (1024 * 1024))
+                size = String.Format("{0:##.00}", byteCount / (1024 * 1024)) + " Mb";
+            else if (byteCount >= 1024)
+                size = String.Format("{0:##.00}", byteCount / 1024) + " Kb";
+            else if (byteCount < 1024)
+                size = String.Format("{0:##}", byteCount) + " By";
+
+            return size;
+        }
+
     }
 }

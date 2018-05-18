@@ -14,6 +14,11 @@ namespace XwMaxLib.Extensions
             return date.ToString("yyyy-MM-ddTHH:mm:ss");
         }
 
+        public static string ToStringUI(this DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
         public static Int64 ToUnixTimestamp(this DateTime value)
         {
             TimeSpan span = (value - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime());
