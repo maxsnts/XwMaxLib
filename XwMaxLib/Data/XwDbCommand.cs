@@ -260,6 +260,22 @@ namespace XwMaxLib.Data
                     break;
             }
         }
+        
+        //********************************************************************************
+        public void ChangePassword(string password)
+        {
+            switch (_Provider)
+            {
+                case XwDbProvider.SQLITE:
+                    {
+                        Open();
+                        ((SQLiteConnection)_Connection).ChangePassword(password);
+                    }
+                    break;
+                default:
+                    throw new Exception("Not implemented");
+            }
+        }
 
         //********************************************************************************
         private void CreateConnection(string connection, string providerName)
@@ -530,7 +546,7 @@ namespace XwMaxLib.Data
                     break;
             }
         }
-
+        
         //********************************************************************************
         private String FormatValue(object value, bool autoQuote = true)
         {
