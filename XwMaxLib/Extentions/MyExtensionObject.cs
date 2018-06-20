@@ -26,6 +26,15 @@ namespace XwMaxLib.Extensions
                 return defaultValue;
         }
 
+        //*************************************************************************************************
+        public static double ToDoubleOrDefault(this object s, double defaultValue)
+        {
+            if (Double.TryParse(s.ToString(), out double i) == true)
+                return i;
+            else
+                return defaultValue;
+        }
+
 
         //*************************************************************************************************
         public static Int64 ToInt64OrDefault(this object s, Int64 defaultValue)
