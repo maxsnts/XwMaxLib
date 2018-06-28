@@ -681,7 +681,7 @@ namespace XwMaxLib.Data
                 _Command.CommandText = command;
 
                 DebugCommand = GetTextCommand();
-                
+
                 switch (Mode)
                 {
                     case XwDbMode.DataSet:
@@ -749,15 +749,17 @@ namespace XwMaxLib.Data
                     trace += "---------------------------------------";
                     Trace.WriteLine(trace);
                 }
-
-                if (resetAfterExec)
-                    ResetCommand();
             }
             catch (Exception ex)
             {
                 XwDbException dbex = new XwDbException(ex);
                 dbex.Command = GetTextCommand();
                 throw dbex;
+            }
+            finally
+            {
+                if (resetAfterExec)
+                    ResetCommand();
             }
         }
 
