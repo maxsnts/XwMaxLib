@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace XwMaxLib.Extensions
 {
@@ -6,12 +7,14 @@ namespace XwMaxLib.Extensions
     {
         public static int GetMidX(this Rectangle rect)
         {
-            return rect.Left + rect.Width / 2;
+            double mid = rect.Left + rect.Width / 2;
+            return (int)Math.Round(mid, 0, MidpointRounding.ToEven);
         }
 
         public static int GetMidY(this Rectangle rect)
         {
-            return rect.Top + rect.Height / 2;
+            double mid = rect.Top + rect.Height / 2;
+            return (int)Math.Round(mid, 0, MidpointRounding.ToEven);
         }
 
         public static Point GetCenter(this Rectangle rect)
@@ -62,8 +65,8 @@ namespace XwMaxLib.Extensions
             float sW = (float)inRect.Width / (float)rect.Width;
             float sH = (float)inRect.Height / (float)rect.Height;
             float scale = (sW < sH) ? sW : sH;
-            int infalteX = (rect.Width - (int)(rect.Width * scale)) / 2;
-            int infalteY = (rect.Height - (int)(rect.Height * scale)) / 2;
+            int infalteX = (int)Math.Round((rect.Width - rect.Width * scale) / 2, 0, MidpointRounding.ToEven);
+            int infalteY = (int)Math.Round((rect.Height - rect.Height * scale) / 2, 0, MidpointRounding.ToEven);
             rect.Inflate(-infalteX, -infalteY);
             return rect; 
         }
@@ -106,9 +109,9 @@ namespace XwMaxLib.Extensions
 
         public static Rectangle InflatePercentage(this Rectangle rect, float percent)
         {
-            float infX = ((float)rect.Width * percent / 100f) / 2;
-            float infY = ((float)rect.Height * percent / 100f) / 2 ;
-            rect.Inflate((int)infX, (int)infY);
+            double infX = ((double)rect.Width * percent / 100f) / 2;
+            double infY = ((double)rect.Height * percent / 100f) / 2 ;
+            rect.Inflate((int)Math.Round(infX, 0, MidpointRounding.ToEven), (int)Math.Round(infY, 0, MidpointRounding.ToEven));
             return rect;
         }
     }
