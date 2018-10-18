@@ -54,6 +54,7 @@ namespace XwMaxLib.Data
         
         //Use this to set the mode only once for all connections
         public static XwDbMode DefaultMode = XwDbMode.DataReader;
+        public static int DefaultCommandTimeout = 30;
 
         //for this connection only
         public XwDbMode Mode = DefaultMode;
@@ -306,6 +307,7 @@ namespace XwMaxLib.Data
             }
 
             ResetCommand();
+            _Command.CommandTimeout = DefaultCommandTimeout;
         }
 
         //********************************************************************************
