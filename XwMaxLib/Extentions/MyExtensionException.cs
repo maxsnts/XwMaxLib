@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Text;
+using XwMaxLib.Data;
 
 namespace XwMaxLib.Extensions
 {
@@ -13,8 +14,7 @@ namespace XwMaxLib.Extensions
         }
 
         //*************************************************************************************************
-        /*
-        public static string ProcessException(this Exception ex, bool innerEx)
+        public static string ProcessException(this Exception ex, bool innerEx = false)
         {
             if (ex == null)
                 return string.Empty;
@@ -26,12 +26,6 @@ namespace XwMaxLib.Extensions
                 message = new StringBuilder("\r\n----------------------------------- INNER EX: ---------------------------------\r\n", 1024);
 
             message.AppendLine(ex.Message);
-
-            if (ex is DbObjectsException)
-            {
-                message.AppendLine("--------------------------------- SQL COMMAND: --------------------------------");
-                message.AppendLine(((DbObjectsException)ex).CommandText);
-            }
             
             if (ex is XwDbException)
             {
@@ -43,17 +37,16 @@ namespace XwMaxLib.Extensions
             if (ex.StackTrace != null)
             {
                 message.AppendLine(ex.StackTrace.ToString());
-                message = message.Replace("at ", "\r\nat ");
+                message = message.Replace(" at ", "\r\nat ");
                 message = message.Replace(" in ", "\r\nin ");
             }
 
-            if (ex != ex.InnerException)
+            if (ex != null)
             {
                 message.Append(ProcessException(ex.InnerException, true));
             }
 
             return message.ToString();
         }
-        */
     }
 }
