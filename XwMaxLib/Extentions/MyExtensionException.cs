@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Data.Common;
 using System.Text;
 using XwMaxLib.Data;
@@ -23,10 +24,11 @@ namespace XwMaxLib.Extensions
             if (innerEx == false)
                 message = new StringBuilder("\r\n=================================== EXCEPTION: ================================\r\n", 1024);
             else
-                message = new StringBuilder("\r\n----------------------------------- INNER EX: ---------------------------------\r\n", 1024);
+                message = new StringBuilder("\r\n=================================== INNER EX: =================================\r\n", 1024);
 
-            message.AppendLine(ex.Message);
-            
+            message.AppendLine($"Type: {ex.GetType()}");
+            message.AppendLine($"Message: {ex.Message}");
+           
             if (ex is XwDbException)
             {
                 message.AppendLine("\r\n-------------------------------- SQL COMMAND: --------------------------------");
@@ -37,9 +39,12 @@ namespace XwMaxLib.Extensions
             if (ex.StackTrace != null)
             {
                 message.AppendLine(ex.StackTrace.ToString());
-                message = message.Replace(" at ", "\r\nat ");
-                message = message.Replace(" in ", "\r\nin ");
+                message = message.Replace(" in ", "\r\n       in ");
             }
+
+            message.AppendLine("----------------------------------- MORE INFO: --------------------------------");
+            foreach (DictionaryEntry de in ex.Data)
+                message.AppendLine($"Key: {de.Key.ToString()} Value:{de.Value}");
 
             if (ex != null)
             {

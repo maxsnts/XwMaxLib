@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XwMaxLib", "XwMaxLib\XwMaxLib.csproj", "{4E1CD22D-0542-4E3B-9683-FB5478851176}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{7EA2D085-390A-41A5-934E-29D052448BCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{4E1CD22D-0542-4E3B-9683-FB5478851176}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E1CD22D-0542-4E3B-9683-FB5478851176}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E1CD22D-0542-4E3B-9683-FB5478851176}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EA2D085-390A-41A5-934E-29D052448BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EA2D085-390A-41A5-934E-29D052448BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EA2D085-390A-41A5-934E-29D052448BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EA2D085-390A-41A5-934E-29D052448BCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
