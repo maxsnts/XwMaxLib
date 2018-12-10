@@ -44,17 +44,13 @@ namespace NailGun.Objects
             //get out now
             if (values == string.Empty)
                 return;
-
-            if (Values.Count > 0)
-                Values.Clear();
-
-            MatchCollection ms = mlsRegex.Matches(values);
             
-            int cnt = ms.Count;
-            for (int i = 0; i < cnt; i++)
+            MatchCollection ms = mlsRegex.Matches(values);
+            int c = ms.Count;
+            foreach (Match m in ms)
             {
-                string language = ms[i].Groups["START"].Value;
-                string value = ms[i].Groups["VALUE"].Value;
+                string language = m.Groups["START"].Value;
+                string value = m.Groups["VALUE"].Value;
                 Values.Add(LCID(false, language), value);
             }
         }
