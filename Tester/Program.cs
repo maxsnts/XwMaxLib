@@ -20,6 +20,7 @@ namespace Tester
                 Console.WriteLine("3 - Test Profiler");
                 Console.WriteLine("4 - Test Crypto");
                 Console.WriteLine("5 - Test Rectangle");
+                Console.WriteLine("6 - Test MLS");
                 Console.ResetColor();
                 Console.Write("Select option: ");
                 string option = Console.ReadLine().Trim();
@@ -45,6 +46,9 @@ namespace Tester
                             break;
                         case "5":
                             MenuRectangle();
+                            break;
+                        case "6":
+                            MenuMLS();
                             break;
                         default:
                             {

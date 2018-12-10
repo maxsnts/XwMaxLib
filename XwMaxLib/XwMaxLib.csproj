@@ -72,6 +72,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TMP\MLS.cs" />
+    <Compile Include="TMP\MultiLanguageString.cs" />
+    <Compile Include="TMP\XwMLS.cs" />
     <Compile Include="UI\ColorComboBox\ColorComboBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
