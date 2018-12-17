@@ -14,7 +14,7 @@ namespace NailGun.Objects
         private int initialStringLengh = 0;
         private Dictionary<string, string> Values = new Dictionary<string, string>();
         private static Dictionary<string, string[]> mlsFallBack = new Dictionary<string, string[]>();
-        private static Regex mlsRegex = new Regex(@"(?isx)\[(?<START>(\w{2}(?:[-_]\w{2})?))\](?<VALUE>.*?)(?:\[/\1\])", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static Regex mlsRegex = new Regex(@"(?isx)\[(?<START>[A-Z]{2}(?:[-_][A-Z]{2})?)\](?<VALUE>.*?)\[/\1\]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         
         public bool DisableFallBack = false;
         
@@ -42,11 +42,10 @@ namespace NailGun.Objects
         private void ParseValue(string values)
         {
             //get out now
-            if (values == string.Empty)
+            if (values == "")
                 return;
             
             MatchCollection ms = mlsRegex.Matches(values);
-            int c = ms.Count;
             foreach (Match m in ms)
             {
                 string language = m.Groups["START"].Value;

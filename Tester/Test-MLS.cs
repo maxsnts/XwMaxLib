@@ -57,7 +57,7 @@ namespace Tester
             XwMLS wxwmls = new XwMLS();
 
             profiler.Start("NEW");
-            for (long i = 0; i < 100000; i++)
+            for (long i = 0; i < 50000; i++)
             {
                 XwMLS mls = new XwMLS("[PT-PT]String de Teste #[/PT-PT][EN-GB]Test String #[/EN-GB][FR-FR]chaîne de test #[/FR-FR][ES-ES]cadena de prueba #[/ES-ES]");
                 string PTPT = mls.GetTranslation("PT-PT");
@@ -72,9 +72,9 @@ namespace Tester
             }
             profiler.Stop("NEW");
 
-            /*
+            
             profiler.Start("OLD");
-            for (long i = 0; i < 100000; i++)
+            for (long i = 0; i < 50000; i++)
             {
                 MLS mls = new MLS("[PT-PT]String de Teste #[/PT-PT][EN-GB]Test String #[/EN-GB][FR-FR]chaîne de test #[/FR-FR][ES-ES]cadena de prueba #[/ES-ES]");
                 string PTPT = mls.GetTranslation("PT-PT");
@@ -88,7 +88,7 @@ namespace Tester
                 string s = mls;
             }
             profiler.Stop("OLD");
-            */
+            
 
             Console.Write(profiler.Print());
         }
