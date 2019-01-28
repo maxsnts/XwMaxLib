@@ -44,11 +44,22 @@ namespace XwMaxLib
         public ManagementObject GetFirstObject(string sQuery, params object[] oParams)
         {
             ManagementObjectCollection oColl = this.RunQuery(sQuery, oParams);
+
+            if (oColl == null)
+                return null;
+
+            if (oColl.Count == 0)
+                return null;
+
             ManagementObjectCollection.ManagementObjectEnumerator oEnum = oColl.GetEnumerator();
+
+            if (oEnum == null)
+                return null;
+
             if (!oEnum.MoveNext())
                 return null;
-            else
-                return oEnum.Current as ManagementObject;
+            
+            return oEnum.Current as ManagementObject;
         }
 
         //*****************************************************************************************************
