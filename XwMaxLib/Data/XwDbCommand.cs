@@ -8,6 +8,9 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using XwMaxLib.Diagnostics;
+using XwMaxLib.Extensions;
 
 //TODO: Multiple Resultsets
 
@@ -45,6 +48,7 @@ namespace XwMaxLib.Data
         private DataSet _DataSet;
         private DbDataReader _DataReader;
         private XwDbProvider _Provider;
+        private Profiler _Profiler;
         private int CurrentDataSetIndex = -1;
         private string StringLiteralPrefix = string.Empty;
         private MakeType Maketype;
@@ -68,37 +72,38 @@ namespace XwMaxLib.Data
         }
         
         //********************************************************************************
-        public XwDbCommand(string connectionString, string providerName)
+        public XwDbCommand(string connectionString, string providerName, Profiler profiler = null)
         {
-            CreateConnection(connectionString, providerName);
+            CreateConnection(connectionString, providerName, profiler);
         }
         
         //********************************************************************************
-        public XwDbCommand(string connectionStringConfigName)
+        public XwDbCommand(string connectionStringConfigName, Profiler profiler = null)
         {
             CreateConnection(ConfigurationManager.ConnectionStrings[connectionStringConfigName].ConnectionString,
-                ConfigurationManager.ConnectionStrings[connectionStringConfigName].ProviderName);
+                ConfigurationManager.ConnectionStrings[connectionStringConfigName].ProviderName, profiler);
         }
 
         //********************************************************************************
-        public XwDbCommand(string connectionStringConfigName, string host, string db)
+        public XwDbCommand(string connectionStringConfigName, string host, string db, Profiler profiler = null)
         {
             string conn = ConfigurationManager.ConnectionStrings[connectionStringConfigName].ConnectionString;
             conn = conn.Replace("{HOST}", host).Replace("{SERVER}", host);
             conn = conn.Replace("{DB}", db).Replace("{DATABASE}", db);
-            CreateConnection(conn, ConfigurationManager.ConnectionStrings[connectionStringConfigName].ProviderName);
+            CreateConnection(conn, ConfigurationManager.ConnectionStrings[connectionStringConfigName].ProviderName, profiler);
         }
 
         //********************************************************************************
-        public XwDbCommand(ConnectionStringSettings connection)
+        public XwDbCommand(ConnectionStringSettings connection, Profiler profiler = null)
         {
-            CreateConnection(connection.ConnectionString, connection.ProviderName);
+            CreateConnection(connection.ConnectionString, connection.ProviderName, profiler);
         }
 
         //********************************************************************************
-        public XwDbCommand(DbConnection connection)
+        public XwDbCommand(DbConnection connection, Profiler profiler = null)
         {
             _Connection = connection;
+            _Profiler = profiler;
         }
 
         //********************************************************************************
@@ -279,8 +284,9 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        private void CreateConnection(string connection, string providerName)
+        private void CreateConnection(string connection, string providerName, Profiler profiler)
         {
+            _Profiler = profiler;
             switch (providerName)
             {
                 case "Data.SqlClient":
@@ -418,12 +424,12 @@ namespace XwMaxLib.Data
         #endregion
 
         //********************************************************************************
-        public void AddParameter(string name, Boolean value, bool allowNull = false, bool nullIf = false)
+        public void AddParameter(string name, bool value, bool allowNull = false, bool nullIf = false)
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.Boolean));
+                AddParameter(name, null, typeof(bool));
             else
-                AddParameter(name, value, typeof(System.Boolean));
+                AddParameter(name, value, typeof(bool));
         }
 
         //********************************************************************************
@@ -436,48 +442,48 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public void AddParameter(string name, Decimal value, bool allowNull = false, Decimal nullIf = 0)
+        public void AddParameter(string name, decimal value, bool allowNull = false, decimal nullIf = 0)
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.Decimal));
+                AddParameter(name, null, typeof(decimal));
             else
-                AddParameter(name, value, typeof(System.Decimal));
+                AddParameter(name, value, typeof(decimal));
         }
 
         //********************************************************************************
-        public void AddParameter(string name, Double value, bool allowNull = false, Double nullIf = 0.0)
+        public void AddParameter(string name, double value, bool allowNull = false, double nullIf = 0.0)
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.Double));
+                AddParameter(name, null, typeof(double));
             else
-                AddParameter(name, value, typeof(System.Double));
+                AddParameter(name, value, typeof(double));
         }
 
         //********************************************************************************
-        public void AddParameter(string name, Int16 value, bool allowNull = false, Int16 nullIf = 0)
+        public void AddParameter(string name, short value, bool allowNull = false, short nullIf = 0)
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.Int16));
+                AddParameter(name, null, typeof(short));
             else
-                AddParameter(name, value, typeof(System.Int16));
+                AddParameter(name, value, typeof(short));
         }
 
         //********************************************************************************
-        public void AddParameter(string name, Int32 value, bool allowNull = false, Int32 nullIf = 0)
+        public void AddParameter(string name, int value, bool allowNull = false, int nullIf = 0)
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.Int32));
+                AddParameter(name, null, typeof(int));
             else
-                AddParameter(name, value, typeof(System.Int32));
+                AddParameter(name, value, typeof(int));
         }
 
         //********************************************************************************
-        public void AddParameter(string name, Int64 value, bool allowNull = false, Int64 nullIf = 0)
+        public void AddParameter(string name, long value, bool allowNull = false, long nullIf = 0)
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.Int64));
+                AddParameter(name, null, typeof(long));
             else
-                AddParameter(name, value, typeof(System.Int64));
+                AddParameter(name, value, typeof(long));
         }
 
 
@@ -494,15 +500,15 @@ namespace XwMaxLib.Data
         public void AddParameter(string name, string value, bool allowNull = false, string nullIf = "")
         {
             if (allowNull && value == nullIf)
-                AddParameter(name, null, typeof(System.String));
+                AddParameter(name, null, typeof(string));
             else
-                AddParameter(name, value, typeof(System.String));
+                AddParameter(name, value, typeof(string));
         }
 
         //********************************************************************************
         public void AddParameter(string name, byte[] value)
         {
-            AddParameter(name, value, typeof(System.Byte));
+            AddParameter(name, value, typeof(byte));
         }
 
         //********************************************************************************
@@ -550,71 +556,71 @@ namespace XwMaxLib.Data
         }
         
         //********************************************************************************
-        private String FormatValue(object value, bool autoQuote = true)
+        private string FormatValue(object value, bool autoQuote = true)
         {
             if (value == null || value is DBNull)
                 return "NULL";
-            else if (value is Boolean)
-                return (Boolean)value ? "1" : "0";
-            else if (value is Byte)
-                return ((Byte)value).ToString();
-            else if (value is Char)
+            else if (value is bool)
+                return (bool)value ? "1" : "0";
+            else if (value is byte)
+                return ((byte)value).ToString();
+            else if (value is char)
                 return $"{StringLiteralPrefix}'{value.ToString().Replace("'", "''")}'";
             else if (value is DateTime)
             {
                 if (((DateTime)value) > DateTime.MinValue)
                 {
                     if (autoQuote)
-                        return String.Format("'{0}'", ((DateTime)value).ToString("s"));
+                        return string.Format("'{0}'", ((DateTime)value).ToString("s"));
                     else
-                        return String.Format("{0}", ((DateTime)value).ToString("s"));
+                        return string.Format("{0}", ((DateTime)value).ToString("s"));
                 }
                 else
                     return "NULL";
             }
-            else if (value is Decimal)
-                return ((Decimal)value).ToString("G");
-            else if (value is Double)
-                return ((Double)value).ToString("G");
-            else if (value is Int16)
-                return ((Int16)value).ToString("G");
-            else if (value is Int32)
-                return ((Int32)value).ToString("G");
-            else if (value is Int64)
-                return ((Int64)value).ToString("G");
-            else if (value is SByte)
-                return ((SByte)value).ToString("G");
-            else if (value is Single)
-                return ((Single)value).ToString("G");
-            else if (value is String)
+            else if (value is decimal)
+                return ((decimal)value).ToString("G");
+            else if (value is double)
+                return ((double)value).ToString("G");
+            else if (value is short)
+                return ((short)value).ToString("G");
+            else if (value is int)
+                return ((int)value).ToString("G");
+            else if (value is long)
+                return ((long)value).ToString("G");
+            else if (value is sbyte)
+                return ((sbyte)value).ToString("G");
+            else if (value is float)
+                return ((float)value).ToString("G");
+            else if (value is string)
             {
                 if (autoQuote)
                     return $"{StringLiteralPrefix}'{value.ToString().Replace("'", "''")}'";
                 else
                     return $"{value.ToString().Replace("'", "''")}";
             }
-            else if (value is UInt16)
-                return ((UInt16)value).ToString("G");
-            else if (value is UInt32)
-                return ((UInt32)value).ToString("G");
-            else if (value is UInt64)
-                return ((UInt64)value).ToString("G");
+            else if (value is ushort)
+                return ((ushort)value).ToString("G");
+            else if (value is uint)
+                return ((uint)value).ToString("G");
+            else if (value is ulong)
+                return ((ulong)value).ToString("G");
             else if (value is Guid)
             {
                 if (((Guid)value) != Guid.Empty)
                 {
                     if (autoQuote)
-                        return String.Format("'{0}'", ((Guid)value).ToString("D"));
+                        return string.Format("'{0}'", ((Guid)value).ToString("D"));
                     else
-                        return String.Format("{0}", ((Guid)value).ToString("D"));
+                        return string.Format("{0}", ((Guid)value).ToString("D"));
                 }
                 else
                     return "NULL";
             }
-            else if (value is Byte[])
+            else if (value is byte[])
             {
                 StringBuilder oHexa = new StringBuilder("0x");
-                byte[] oBytes = (Byte[])(value);
+                byte[] oBytes = (byte[])(value);
                 if (oBytes.Length == 0)
                     oHexa.Append("0");
                 else
@@ -625,9 +631,9 @@ namespace XwMaxLib.Data
             else
             {
                 if (autoQuote)
-                    return String.Format(StringLiteralPrefix + "'{0}'", value.ToString().Replace("'", "''"));
+                    return string.Format(StringLiteralPrefix + "'{0}'", value.ToString().Replace("'", "''"));
                 else
-                    return String.Format(StringLiteralPrefix + "{0}", value.ToString().Replace("'", "''"));
+                    return string.Format(StringLiteralPrefix + "{0}", value.ToString().Replace("'", "''"));
             }
         }
 
@@ -635,21 +641,36 @@ namespace XwMaxLib.Data
         public void ExecuteSP(string command, bool resetAfterExec = true)
         {
             _Command.CommandType = CommandType.StoredProcedure;
+            if (_Profiler != null)
+                _Profiler.Start($"DB:{command}");
             Execute(command, resetAfterExec);
+            if (_Profiler != null)
+                _Profiler.Stop($"DB:{command}");
         }
- 
+
         //********************************************************************************
         public void ExecuteTX(string command, bool resetAfterExec = true)
         {
             _Command.CommandType = CommandType.Text;
+            string commandBlock = command.Left(50).Replace("\\r", "").Replace("\\n", " ");
+            if (_Profiler != null)
+                _Profiler.Start($"DB:{commandBlock}");
             Execute(command, resetAfterExec);
+            if (_Profiler != null)
+                _Profiler.Stop($"DB:{commandBlock}");
         }
 
         //********************************************************************************
         public void ExecuteMK(bool resetAfterExec = true)
         {
             _Command.CommandType = CommandType.Text;
-            Execute(MakeQuery(), resetAfterExec);
+            string command = MakeQuery();
+            string commandBlock = command.Left(50).Replace("\\r", "").Replace("\\n", " ");
+            if (_Profiler != null)
+                _Profiler.Start($"DB:{commandBlock}");
+            Execute(command, resetAfterExec);
+            if (_Profiler != null)
+                _Profiler.Stop($"DB:{commandBlock}");
         }
 
         //********************************************************************************
@@ -684,67 +705,90 @@ namespace XwMaxLib.Data
 
                 DebugCommand = GetTextCommand();
 
-                switch (Mode)
+                for (int r = 1; r <= 3; r++)
                 {
-                    case XwDbMode.DataSet:
+                    try
+                    {
+                        switch (Mode)
                         {
-                            switch (_Provider)
+                            case XwDbMode.DataSet:
                             {
-                                case XwDbProvider.MSSQL:
+                                switch (_Provider)
+                                {
+                                    case XwDbProvider.MSSQL:
                                     {
                                         SqlDataAdapter adapter = new SqlDataAdapter((SqlCommand)_Command);
                                         _DataSet = new DataSet();
                                         adapter.Fill(_DataSet);
                                     }
                                     break;
-                                case XwDbProvider.MYSQL:
+                                    case XwDbProvider.MYSQL:
                                     {
                                         MySqlDataAdapter adapter = new MySqlDataAdapter((MySqlCommand)_Command);
                                         _DataSet = new DataSet();
                                         adapter.Fill(_DataSet);
                                     }
                                     break;
-                                case XwDbProvider.SQLITE:
+                                    case XwDbProvider.SQLITE:
                                     {
                                         SQLiteDataAdapter adapter = new SQLiteDataAdapter((SQLiteCommand)_Command);
                                         _DataSet = new DataSet();
                                         adapter.Fill(_DataSet);
                                     }
                                     break;
+                                }
+                                CurrentDataSetIndex = -1;
                             }
-                            CurrentDataSetIndex = -1;
-                        }
-                        break;
-                    case XwDbMode.DataReader:
-                        {
-                            //switch just in case of future differences... maybe i will remove it if 
-                            switch (_Provider)
+                            break;
+                            case XwDbMode.DataReader:
                             {
-                                case XwDbProvider.MSSQL:
+                                //switch just in case of future differences... maybe i will remove it if 
+                                switch (_Provider)
+                                {
+                                    case XwDbProvider.MSSQL:
                                     {
                                         _DataReader = _Command.ExecuteReader();
                                     }
                                     break;
-                                case XwDbProvider.MYSQL:
+                                    case XwDbProvider.MYSQL:
                                     {
                                         _DataReader = _Command.ExecuteReader();
                                     }
                                     break;
-                                case XwDbProvider.SQLITE:
+                                    case XwDbProvider.SQLITE:
                                     {
                                         _DataReader = _Command.ExecuteReader();
                                     }
                                     break;
+                                }
+                            }
+                            break;
+                        }
+                        
+                        break; //out of retry
+                    }
+                    catch(Exception ex)
+                    {
+                        if (r < 3)
+                        {
+                            if (ex.Message.Contains("was deadlocked") ||
+                                ex.Message.Contains("client was unable to establish a connection") ||
+                                ex.Message.Contains("timeout period elapsed") ||
+                                ex.Message.Contains("wait timeout exceeded"))
+                            {
+                                Thread.Sleep(r * 1000);
+                                continue;
                             }
                         }
-                        break;
+                        throw ex;
+                    }
                 }
 
                 watch.Stop();
 
                 if (Debugger.IsAttached)
                 {
-                    String trace = "---------------Execution---------------\r\n";
+                    string trace = "---------------Execution---------------\r\n";
                     trace += GetTextCommand();
                     trace += "\r\n----------------Message----------------\r\n";
                     trace += $"Time:{watch.Elapsed.ToString()}\r\n";
@@ -766,7 +810,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public String GetDebugCommand()
+        public string GetDebugCommand()
         {
             if (DebugCommand == string.Empty)
                 return "DebugCommand is Empty, nothing was executed yet";
@@ -775,7 +819,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        private String GetTextCommand()
+        private string GetTextCommand()
         {
             string command = string.Empty;
             if (_Command.CommandType == CommandType.StoredProcedure)
@@ -847,7 +891,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public Int32 RowCount
+        public int RowCount
         {
             get
             {
@@ -1035,21 +1079,21 @@ namespace XwMaxLib.Data
         //********************************************************************************
         public SqlDbType GetSqlType()
         {
-            if (_Type == typeof(System.Guid))
+            if (_Type == typeof(Guid))
                 return SqlDbType.UniqueIdentifier;
-            else if (_Type == typeof(System.String))
+            else if (_Type == typeof(string))
                 return SqlDbType.NVarChar;
-            else if (_Type == typeof(System.Double))
+            else if (_Type == typeof(double))
                 return SqlDbType.Decimal;
-            else if (_Type == typeof(System.Int32))
+            else if (_Type == typeof(int))
                 return SqlDbType.Int;
-            else if (_Type == typeof(System.Int64))
+            else if (_Type == typeof(long))
                 return SqlDbType.BigInt;
-            else if (_Type == typeof(System.DateTime))
+            else if (_Type == typeof(DateTime))
                 return SqlDbType.DateTime;
-            else if (_Type == typeof(System.Boolean))
+            else if (_Type == typeof(bool))
                 return SqlDbType.Bit;
-            else if (_Type == typeof(System.Byte))
+            else if (_Type == typeof(byte))
                 return SqlDbType.Binary;
 
             throw new Exception($"Unknown data type {_Type}");
@@ -1058,21 +1102,21 @@ namespace XwMaxLib.Data
         //********************************************************************************
         public MySqlDbType GetMySqlType()
         {
-            if (_Type == typeof(System.Guid))
+            if (_Type == typeof(Guid))
                 return MySqlDbType.Guid;
-            else if (_Type == typeof(System.String))
+            else if (_Type == typeof(string))
                 return MySqlDbType.VarChar;
-            else if (_Type == typeof(System.Double))
+            else if (_Type == typeof(double))
                 return MySqlDbType.Decimal;
-            else if (_Type == typeof(System.Int32))
+            else if (_Type == typeof(int))
                 return MySqlDbType.Int32;
-            else if (_Type == typeof(System.Int64))
+            else if (_Type == typeof(long))
                 return MySqlDbType.Int64;
-            else if (_Type == typeof(System.DateTime))
+            else if (_Type == typeof(DateTime))
                 return MySqlDbType.DateTime;
-            else if (_Type == typeof(System.Boolean))
+            else if (_Type == typeof(bool))
                 return MySqlDbType.Bit;
-            else if (_Type == typeof(System.Byte))
+            else if (_Type == typeof(byte))
                 return MySqlDbType.Binary;
 
             throw new Exception($"Unknown data type {_Type}");
@@ -1081,21 +1125,21 @@ namespace XwMaxLib.Data
         //********************************************************************************
         public DbType GetSQLiteType()
         {
-            if (_Type == typeof(System.Guid))
+            if (_Type == typeof(Guid))
                 return DbType.Guid;
-            else if (_Type == typeof(System.String))
+            else if (_Type == typeof(string))
                 return DbType.String;
-            else if (_Type == typeof(System.Double))
+            else if (_Type == typeof(double))
                 return DbType.Double;
-            else if (_Type == typeof(System.Int32))
+            else if (_Type == typeof(int))
                 return DbType.Int32;
-            else if (_Type == typeof(System.Int64))
+            else if (_Type == typeof(long))
                 return DbType.Int64;
-            else if (_Type == typeof(System.DateTime))
+            else if (_Type == typeof(DateTime))
                 return DbType.DateTime;
-            else if (_Type == typeof(System.Boolean))
+            else if (_Type == typeof(bool))
                 return DbType.Boolean;
-            else if (_Type == typeof(System.Byte))
+            else if (_Type == typeof(byte))
                 return DbType.Binary;
 
             throw new Exception($"Unknown data type {_Type}");
@@ -1130,7 +1174,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public Boolean ToBoolean(bool defaultValue = false, bool convertNULLs = true)
+        public bool ToBoolean(bool defaultValue = false, bool convertNULLs = true)
         {
             object obj = ToDbValue();
             if (convertNULLs == true && obj == DBNull.Value)
@@ -1139,7 +1183,7 @@ namespace XwMaxLib.Data
         }
         
         //********************************************************************************
-        public Decimal ToDecimal(Decimal defaultValue = 0, bool convertNULLs = true)
+        public decimal ToDecimal(decimal defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
             if (convertNULLs == true && obj == DBNull.Value)
@@ -1148,7 +1192,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public Double ToDouble(Double defaultValue = 0.0, bool convertNULLs = true)
+        public double ToDouble(double defaultValue = 0.0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
             if (convertNULLs == true && obj == DBNull.Value)
@@ -1157,7 +1201,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public Int16 ToInt16(Int16 defaultValue = 0, bool convertNULLs = true)
+        public short ToInt16(short defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
             if (convertNULLs == true && obj == DBNull.Value)
@@ -1166,7 +1210,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public Int32 ToInt32(Int32 defaultValue = 0, bool convertNULLs = true)
+        public int ToInt32(int defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
             if (convertNULLs == true && obj == DBNull.Value)
@@ -1175,7 +1219,7 @@ namespace XwMaxLib.Data
         }
 
         //********************************************************************************
-        public Int64 ToInt64(Int64 defaultValue = 0, bool convertNULLs = true)
+        public long ToInt64(long defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
             if (convertNULLs == true && obj == DBNull.Value)
@@ -1238,7 +1282,7 @@ namespace XwMaxLib.Data
         {
             if (Debugger.IsAttached)
             {
-                String trace = "---------------Execution---------------\r\n";
+                string trace = "---------------Execution---------------\r\n";
                 trace += Command;
                 trace += "---------------------------------------\r\n";
                 Trace.WriteLine(trace);
@@ -1250,7 +1294,7 @@ namespace XwMaxLib.Data
         {
             if (Debugger.IsAttached)
             {
-                String trace = "---------------Execution---------------\r\n";
+                string trace = "---------------Execution---------------\r\n";
                 trace += Command;
                 trace += "---------------------------------------\r\n";
                 Trace.WriteLine(trace);

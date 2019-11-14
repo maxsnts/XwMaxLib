@@ -18,7 +18,7 @@ namespace XwMaxLib.Diagnostics
         private ExecutionStopwatch ExTotal = new ExecutionStopwatch();
         private Dictionary<string, ProfilerItem> ProfileItems = new Dictionary<string, ProfilerItem>();
         private bool DoRecord = false;
-        private int TotalTime = 0;
+        public int TotalTime = 0;
 
 
         //**************************************************************************************************
