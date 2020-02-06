@@ -55,7 +55,7 @@ namespace XwMaxLib.Data
         private string MakeTable = string.Empty;
         private string MakeWhere = string.Empty;
         private string DebugCommand = string.Empty;
-        
+
         //Use this to set the mode only once for all connections
         public static XwDbMode DefaultMode = XwDbMode.DataReader;
         public static int DefaultCommandTimeout = 30;
@@ -64,19 +64,19 @@ namespace XwMaxLib.Data
         public XwDbMode Mode = DefaultMode;
 
         public bool CloseByKilling = false;
-        
+
         public int CommandTimeout
         {
             set { _Command.CommandTimeout = value; }
             get { return _Command.CommandTimeout; }
         }
-        
+
         //********************************************************************************
         public XwDbCommand(string connectionString, string providerName, Profiler profiler = null)
         {
             CreateConnection(connectionString, providerName, profiler);
         }
-        
+
         //********************************************************************************
         public XwDbCommand(string connectionStringConfigName, Profiler profiler = null)
         {
@@ -122,100 +122,53 @@ namespace XwMaxLib.Data
             switch (Maketype)
             {
                 case MakeType.REPLACE:
+                {
+                    if (_Provider != XwDbProvider.MYSQL)
+                        throw new Exception("REPLACE is implemented only for MySQL");
+
+                    query = $"REPLACE INTO {MakeTable} SET ";
+                    foreach (DbParameter parameter in _Command.Parameters)
                     {
-                        if (_Provider != XwDbProvider.MYSQL)
-                            throw new Exception("REPLACE is implemented only for MySQL");
-
-                        query = $"REPLACE INTO {MakeTable} SET ";
-                        foreach (DbParameter parameter in _Command.Parameters)
-                        {
-                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                            query += $"{param}=@{param},";
-                        }
-
-                        if (query.EndsWith(","))
-                            query = query.Remove(query.Length - 1, 1);
+                        string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                        query += $"{param}=@{param},";
                     }
-                    break;
+
+                    if (query.EndsWith(","))
+                        query = query.Remove(query.Length - 1, 1);
+                }
+                break;
                 case MakeType.UPSERT:
+                {
+                    if (_Provider != XwDbProvider.MYSQL && _Provider != XwDbProvider.SQLITE)
+                        throw new Exception("UPSERT is implemented only for MySQL and SQLite");
+
+                    query = $"INSERT INTO {MakeTable} (";
+
+                    foreach (DbParameter parameter in _Command.Parameters)
                     {
-                        if (_Provider != XwDbProvider.MYSQL && _Provider != XwDbProvider.SQLITE)
-                            throw new Exception("UPSERT is implemented only for MySQL and SQLite");
-
-                        query = $"INSERT INTO {MakeTable} (";
-
-                        foreach (DbParameter parameter in _Command.Parameters)
-                        {
-                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                            query += $"{param},";
-                        }
-
-                        if (query.EndsWith(","))
-                            query = query.Remove(query.Length - 1, 1);
-
-                        query += ") VALUES (";
-
-                        foreach (DbParameter parameter in _Command.Parameters)
-                        {
-                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                            query += $"@{param},";
-                        }
-
-                        if (query.EndsWith(","))
-                            query = query.Remove(query.Length - 1, 1);
-
-                        query += ") ";
-
-                        if (_Provider == XwDbProvider.MYSQL)
-                        {
-                            query += " ON DUPLICATE KEY UPDATE ";
-
-                            foreach (DbParameter parameter in _Command.Parameters)
-                            {
-                                string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                                query += $"{param}=@{param},";
-                            }
-
-                            if (query.EndsWith(","))
-                                query = query.Remove(query.Length - 1, 1);
-                        }
-
-                        if (_Provider == XwDbProvider.SQLITE)
-                        {
-                            query.Replace("INSERT INTO", "INSERT OR REPLACE INTO");
-                        }
+                        string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                        query += $"{param},";
                     }
-                    break;
-                case MakeType.INSERT:
+
+                    if (query.EndsWith(","))
+                        query = query.Remove(query.Length - 1, 1);
+
+                    query += ") VALUES (";
+
+                    foreach (DbParameter parameter in _Command.Parameters)
                     {
-                        query = $"INSERT INTO {MakeTable} (";
-
-                        foreach (DbParameter parameter in _Command.Parameters)
-                        {
-                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                            query += $"{param},";
-                        }
-
-                        if (query.EndsWith(","))
-                            query = query.Remove(query.Length - 1, 1);
-
-                        query += ") VALUES (";
-
-                        foreach (DbParameter parameter in _Command.Parameters)
-                        {
-                            string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
-                            query += $"@{param},";
-                        }
-
-                        if (query.EndsWith(","))
-                            query = query.Remove(query.Length - 1, 1);
-
-                        query += ")";
+                        string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                        query += $"@{param},";
                     }
-                    break;
-                case MakeType.UPDATE:
+
+                    if (query.EndsWith(","))
+                        query = query.Remove(query.Length - 1, 1);
+
+                    query += ") ";
+
+                    if (_Provider == XwDbProvider.MYSQL)
                     {
-                        query = $"UPDATE {MakeTable} SET ";
+                        query += " ON DUPLICATE KEY UPDATE ";
 
                         foreach (DbParameter parameter in _Command.Parameters)
                         {
@@ -225,14 +178,61 @@ namespace XwMaxLib.Data
 
                         if (query.EndsWith(","))
                             query = query.Remove(query.Length - 1, 1);
-
-                        query += $" WHERE {MakeWhere}";
                     }
-                    break;
+
+                    if (_Provider == XwDbProvider.SQLITE)
+                    {
+                        query.Replace("INSERT INTO", "INSERT OR REPLACE INTO");
+                    }
+                }
+                break;
+                case MakeType.INSERT:
+                {
+                    query = $"INSERT INTO {MakeTable} (";
+
+                    foreach (DbParameter parameter in _Command.Parameters)
+                    {
+                        string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                        query += $"{param},";
+                    }
+
+                    if (query.EndsWith(","))
+                        query = query.Remove(query.Length - 1, 1);
+
+                    query += ") VALUES (";
+
+                    foreach (DbParameter parameter in _Command.Parameters)
+                    {
+                        string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                        query += $"@{param},";
+                    }
+
+                    if (query.EndsWith(","))
+                        query = query.Remove(query.Length - 1, 1);
+
+                    query += ")";
+                }
+                break;
+                case MakeType.UPDATE:
+                {
+                    query = $"UPDATE {MakeTable} SET ";
+
+                    foreach (DbParameter parameter in _Command.Parameters)
+                    {
+                        string param = Regex.Replace(parameter.ParameterName, @"^\W", "", RegexOptions.IgnoreCase);
+                        query += $"{param}=@{param},";
+                    }
+
+                    if (query.EndsWith(","))
+                        query = query.Remove(query.Length - 1, 1);
+
+                    query += $" WHERE {MakeWhere}";
+                }
+                break;
                 default:
                     throw new Exception("Unknown MakeType");
             }
-            
+
             return query;
         }
 
@@ -240,44 +240,44 @@ namespace XwMaxLib.Data
         public void ResetCommand()
         {
             MakeTable = string.Empty;
-            
+
             if (_Command != null)
             {
                 _Command.Dispose();
                 _Command = null;
             }
-            
+
             switch (_Provider)
             {
                 case XwDbProvider.MSSQL:
-                    {
-                        _Command = new SqlCommand();
-                    }
-                    break;
+                {
+                    _Command = new SqlCommand();
+                }
+                break;
                 case XwDbProvider.MYSQL:
-                    {
-                        _Command = new MySqlCommand();
-                    }
-                    break;
+                {
+                    _Command = new MySqlCommand();
+                }
+                break;
                 case XwDbProvider.SQLITE:
-                    {
-                        _Command = new SQLiteCommand();
-                    }
-                    break;
+                {
+                    _Command = new SQLiteCommand();
+                }
+                break;
             }
         }
-        
+
         //********************************************************************************
         public void ChangePassword(string password)
         {
             switch (_Provider)
             {
                 case XwDbProvider.SQLITE:
-                    {
-                        Open();
-                        ((SQLiteConnection)_Connection).ChangePassword(password);
-                    }
-                    break;
+                {
+                    Open();
+                    ((SQLiteConnection)_Connection).ChangePassword(password);
+                }
+                break;
                 default:
                     throw new Exception("Not implemented");
             }
@@ -290,24 +290,24 @@ namespace XwMaxLib.Data
             switch (providerName)
             {
                 case "Data.SqlClient":
-                    {
-                        _Provider = XwDbProvider.MSSQL;
-                        _Connection = new SqlConnection(connection);
-                        StringLiteralPrefix = "N";
-                    }
-                    break;
+                {
+                    _Provider = XwDbProvider.MSSQL;
+                    _Connection = new SqlConnection(connection);
+                    StringLiteralPrefix = "N";
+                }
+                break;
                 case "Data.MySqlClient":
-                    {
-                        _Provider = XwDbProvider.MYSQL;
-                        _Connection = new MySqlConnection(connection);
-                    }
-                    break;
+                {
+                    _Provider = XwDbProvider.MYSQL;
+                    _Connection = new MySqlConnection(connection);
+                }
+                break;
                 case "Data.SQLite":
-                    {
-                        _Provider = XwDbProvider.SQLITE;
-                        _Connection = new SQLiteConnection(connection);
-                    }
-                    break;
+                {
+                    _Provider = XwDbProvider.SQLITE;
+                    _Connection = new SQLiteConnection(connection);
+                }
+                break;
                 default:
                     throw new Exception($"Connection String ProviderName [{providerName}] not supported");
             }
@@ -324,11 +324,11 @@ namespace XwMaxLib.Data
                 switch (_Connection.State)
                 {
                     case ConnectionState.Broken:
-                        {
-                            _Connection.Close();
-                            _Connection.Open();
-                        }
-                        break;
+                    {
+                        _Connection.Close();
+                        _Connection.Open();
+                    }
+                    break;
                     case ConnectionState.Closed:
                         _Connection.Open();
                         break;
@@ -365,7 +365,7 @@ namespace XwMaxLib.Data
                 }
             }
         }
-        
+
         //********************************************************************************
         public bool IsDisposed { get; protected set; }
         public void Close(bool kill = false)
@@ -518,43 +518,43 @@ namespace XwMaxLib.Data
             switch (_Provider)
             {
                 case XwDbProvider.MSSQL:
-                    {
-                        if (_Command == null)
-                            _Command = new SqlCommand();
+                {
+                    if (_Command == null)
+                        _Command = new SqlCommand();
 
-                        if (Regex.IsMatch(name, @"^\w"))
-                            name = "@" + name;
+                    if (Regex.IsMatch(name, @"^\w"))
+                        name = "@" + name;
 
-                        SqlParameter param = new SqlParameter(name, val.GetSqlType());
-                        param.Value = val.ToDbValue();
-                        _Command.Parameters.Add(param);
-                    }
-                    break;
+                    SqlParameter param = new SqlParameter(name, val.GetSqlType());
+                    param.Value = val.ToDbValue();
+                    _Command.Parameters.Add(param);
+                }
+                break;
                 case XwDbProvider.MYSQL:
-                    {
-                        if (_Command == null)
-                            _Command = new MySqlCommand();
-                        MySqlParameter param = new MySqlParameter(name, val.GetMySqlType());
-                        param.Value = val.ToDbValue();
-                        _Command.Parameters.Add(param);
-                    }
-                    break;
+                {
+                    if (_Command == null)
+                        _Command = new MySqlCommand();
+                    MySqlParameter param = new MySqlParameter(name, val.GetMySqlType());
+                    param.Value = val.ToDbValue();
+                    _Command.Parameters.Add(param);
+                }
+                break;
                 case XwDbProvider.SQLITE:
-                    {
-                        if (_Command == null)
-                            _Command = new SQLiteCommand();
+                {
+                    if (_Command == null)
+                        _Command = new SQLiteCommand();
 
-                        if (Regex.IsMatch(name, @"^\w"))
-                            name = "@" + name;
+                    if (Regex.IsMatch(name, @"^\w"))
+                        name = "@" + name;
 
-                        SQLiteParameter param = new SQLiteParameter(name, val.GetSQLiteType());
-                        param.Value = val.ToDbValue();
-                        _Command.Parameters.Add(param);
-                    }
-                    break;
+                    SQLiteParameter param = new SQLiteParameter(name, val.GetSQLiteType());
+                    param.Value = val.ToDbValue();
+                    _Command.Parameters.Add(param);
+                }
+                break;
             }
         }
-        
+
         //********************************************************************************
         private string FormatValue(object value, bool autoQuote = true)
         {
@@ -764,10 +764,10 @@ namespace XwMaxLib.Data
                             }
                             break;
                         }
-                        
+
                         break; //out of retry
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         if (r < 3)
                         {
@@ -827,28 +827,28 @@ namespace XwMaxLib.Data
                 switch (_Provider)
                 {
                     case XwDbProvider.MSSQL:
+                    {
+                        command += "EXEC ";
+                        command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + " ";
+                        for (int i = 0; i < _Command.Parameters.Count; i++)
                         {
-                            command += "EXEC ";
-                            command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + " ";
-                            for (int i = 0; i < _Command.Parameters.Count; i++)
-                            {
-                                if (i > 0) command += ",";
-                                command += $"{_Command.Parameters[i].ParameterName}={FormatValue(_Command.Parameters[i].Value)}";
-                            }
+                            if (i > 0) command += ",";
+                            command += $"{_Command.Parameters[i].ParameterName}={FormatValue(_Command.Parameters[i].Value)}";
                         }
-                        break;
+                    }
+                    break;
                     case XwDbProvider.MYSQL:
+                    {
+                        command += "CALL ";
+                        command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + "(";
+                        for (int i = 0; i < _Command.Parameters.Count; i++)
                         {
-                            command += "CALL ";
-                            command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + "(";
-                            for (int i = 0; i < _Command.Parameters.Count; i++)
-                            {
-                                if (i > 0) command += ",";
-                                command += $"{FormatValue(_Command.Parameters[i].Value)}";
-                            }
-                            command += ");";
+                            if (i > 0) command += ",";
+                            command += $"{FormatValue(_Command.Parameters[i].Value)}";
                         }
-                        break;
+                        command += ");";
+                    }
+                    break;
                     default:
                         command = $"COMMAND NOT GENERATED FOR PROVIDER: {_Provider}";
                         break;
@@ -874,17 +874,17 @@ namespace XwMaxLib.Data
                 switch (Mode)
                 {
                     case XwDbMode.DataSet:
-                        {
-                            if (_DataSet != null)
-                                if (_DataSet.Tables.Count > 0)
-                                    if (_DataSet.Tables[0].Rows.Count > 0)
-                                        return true;
-                        }
-                        break;
+                    {
+                        if (_DataSet != null)
+                            if (_DataSet.Tables.Count > 0)
+                                if (_DataSet.Tables[0].Rows.Count > 0)
+                                    return true;
+                    }
+                    break;
                     case XwDbMode.DataReader:
-                        {
-                            return _DataReader.HasRows;
-                        }
+                    {
+                        return _DataReader.HasRows;
+                    }
                 }
                 return false;
             }
@@ -898,52 +898,52 @@ namespace XwMaxLib.Data
                 switch (Mode)
                 {
                     case XwDbMode.DataSet:
-                        {
-                            if (_DataSet != null)
-                                if (_DataSet.Tables.Count > 0)
-                                    return _DataSet.Tables[0].Rows.Count;
-                        }
-                        break;
+                    {
+                        if (_DataSet != null)
+                            if (_DataSet.Tables.Count > 0)
+                                return _DataSet.Tables[0].Rows.Count;
+                    }
+                    break;
                     case XwDbMode.DataReader:
+                    {
+                        using (var dataTable = new DataTable())
                         {
-                            using (var dataTable = new DataTable())
-                            {
-                                Mode = XwDbMode.DataSet; //change modes
-                                dataTable.Load(_DataReader);
-                                _DataSet = new DataSet();
-                                _DataSet.Tables.Add(dataTable);
-                                return dataTable.Rows.Count;
-                            }
+                            Mode = XwDbMode.DataSet; //change modes
+                            dataTable.Load(_DataReader);
+                            _DataSet = new DataSet();
+                            _DataSet.Tables.Add(dataTable);
+                            return dataTable.Rows.Count;
                         }
+                    }
                 }
                 return 0;
             }
         }
-        
+
         //********************************************************************************
         public bool Read()
         {
             switch (Mode)
             {
                 case XwDbMode.DataSet:
-                    {
-                        if (_DataSet == null)
-                            throw new Exception("DataSet is NULL");
+                {
+                    if (_DataSet == null)
+                        throw new Exception("DataSet is NULL");
 
-                        if (CurrentDataSetIndex + 1 < _DataSet.Tables[0].Rows.Count)
-                        {
-                            CurrentDataSetIndex++;
-                            return true;
-                        }
-                        else
-                            return false;
-                    }
-                case XwDbMode.DataReader:
+                    if (CurrentDataSetIndex + 1 < _DataSet.Tables[0].Rows.Count)
                     {
-                        if (_DataReader == null)
-                            throw new Exception("DataReader is NULL");
-                        return _DataReader.Read();
+                        CurrentDataSetIndex++;
+                        return true;
                     }
+                    else
+                        return false;
+                }
+                case XwDbMode.DataReader:
+                {
+                    if (_DataReader == null)
+                        throw new Exception("DataReader is NULL");
+                    return _DataReader.Read();
+                }
             }
 
             return false;
@@ -966,14 +966,14 @@ namespace XwMaxLib.Data
             switch (Mode)
             {
                 case XwDbMode.DataSet:
-                    {
-                        DataRow row = _DataSet.Tables[0].Rows[CurrentDataSetIndex];
-                        return new XwDbValue(row[index]);
-                    }
+                {
+                    DataRow row = _DataSet.Tables[0].Rows[CurrentDataSetIndex];
+                    return new XwDbValue(row[index]);
+                }
                 case XwDbMode.DataReader:
-                    {
-                        return new XwDbValue(_DataReader.GetValue(index));
-                    }
+                {
+                    return new XwDbValue(_DataReader.GetValue(index));
+                }
             }
 
             throw new Exception($"Unable to get Value for index [{index}]");
@@ -986,15 +986,22 @@ namespace XwMaxLib.Data
             switch (Mode)
             {
                 case XwDbMode.DataSet:
-                    {
-                        index = _DataSet.Tables[0].Columns.IndexOf(name);
-                    }
-                    break;
+                {
+                    index = _DataSet.Tables[0].Columns.IndexOf(name);
+                }
+                break;
                 case XwDbMode.DataReader:
+                {
+                    try
                     {
                         index = _DataReader.GetOrdinal(name);
                     }
-                    break;
+                    catch (IndexOutOfRangeException)
+                    {
+                        return -1;
+                    }
+                }
+                break;
             }
 
             if (index == -1)
@@ -1010,10 +1017,10 @@ namespace XwMaxLib.Data
             switch (_Provider)
             {
                 case XwDbProvider.SQLITE:
-                    {
-                        command = "SELECT name FROM sqlite_master WHERE type='table' AND name=@TABLENAME";
-                    }
-                    break;
+                {
+                    command = "SELECT name FROM sqlite_master WHERE type='table' AND name=@TABLENAME";
+                }
+                break;
                 default:
                     throw new Exception("TableExists is not implemented for this provider");
             }
@@ -1034,10 +1041,10 @@ namespace XwMaxLib.Data
             switch (_Provider)
             {
                 case XwDbProvider.SQLITE:
-                    {
-                        command = $"SELECT {columnName} FROM {tableName} LIMIT 0";
-                    }
-                    break;
+                {
+                    command = $"SELECT {columnName} FROM {tableName} LIMIT 0";
+                }
+                break;
                 default:
                     throw new Exception("TableExists is not implemented for this provider");
             }
@@ -1050,7 +1057,7 @@ namespace XwMaxLib.Data
             }
             catch
             { }
-            
+
             return false;
         }
     }
@@ -1181,7 +1188,7 @@ namespace XwMaxLib.Data
                 return defaultValue;
             return Convert.ToBoolean(obj);
         }
-        
+
         //********************************************************************************
         public decimal ToDecimal(decimal defaultValue = 0, bool convertNULLs = true)
         {
