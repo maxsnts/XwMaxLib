@@ -1,4 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
+using Npgsql;
+using NpgsqlTypes;
 using System;
 using System.Configuration;
 using System.Data;
@@ -26,6 +28,7 @@ namespace XwMaxLib.Data
     {
         MSSQL,
         MYSQL,
+        PGSQL,
         SQLITE
     }
 
@@ -38,9 +41,9 @@ namespace XwMaxLib.Data
         //DELETE
     }
 
-    //**************************************************************************************************************
-    //**************************************************************************************************************
-    //**************************************************************************************************************
+    //*****************************************************************************************************************
+    //*****************************************************************************************************************
+    //*****************************************************************************************************************
     public class XwDbCommand : IDisposable
     {
         private DbConnection _Connection;
@@ -71,20 +74,20 @@ namespace XwMaxLib.Data
             get { return _Command.CommandTimeout; }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbCommand(string connectionString, string providerName, Profiler profiler = null)
         {
             CreateConnection(connectionString, providerName, profiler);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbCommand(string connectionStringConfigName, Profiler profiler = null)
         {
             CreateConnection(ConfigurationManager.ConnectionStrings[connectionStringConfigName].ConnectionString,
                 ConfigurationManager.ConnectionStrings[connectionStringConfigName].ProviderName, profiler);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbCommand(string connectionStringConfigName, string host, string db, Profiler profiler = null)
         {
             string conn = ConfigurationManager.ConnectionStrings[connectionStringConfigName].ConnectionString;
@@ -93,20 +96,20 @@ namespace XwMaxLib.Data
             CreateConnection(conn, ConfigurationManager.ConnectionStrings[connectionStringConfigName].ProviderName, profiler);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbCommand(ConnectionStringSettings connection, Profiler profiler = null)
         {
             CreateConnection(connection.ConnectionString, connection.ProviderName, profiler);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbCommand(DbConnection connection, Profiler profiler = null)
         {
             _Connection = connection;
             _Profiler = profiler;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void Make(MakeType type, string table, string where = "")
         {
             Maketype = type;
@@ -114,7 +117,7 @@ namespace XwMaxLib.Data
             MakeWhere = where;
         }
 
-        //*************************************************************************************************
+        //*************************************************************************************************************
         private string MakeQuery()
         {
             string query = string.Empty;
@@ -236,7 +239,7 @@ namespace XwMaxLib.Data
             return query;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void ResetCommand()
         {
             MakeTable = string.Empty;
@@ -259,6 +262,11 @@ namespace XwMaxLib.Data
                     _Command = new MySqlCommand();
                 }
                 break;
+                case XwDbProvider.PGSQL:
+                {
+                    _Command = new NpgsqlCommand();
+                }
+                break;
                 case XwDbProvider.SQLITE:
                 {
                     _Command = new SQLiteCommand();
@@ -267,7 +275,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void ChangePassword(string password)
         {
             switch (_Provider)
@@ -283,7 +291,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         private void CreateConnection(string connection, string providerName, Profiler profiler)
         {
             _Profiler = profiler;
@@ -302,6 +310,12 @@ namespace XwMaxLib.Data
                     _Connection = new MySqlConnection(connection);
                 }
                 break;
+                case "Npgsql":
+                {
+                    _Provider = XwDbProvider.PGSQL;
+                    _Connection = new NpgsqlConnection(connection);
+                }
+                break;
                 case "Data.SQLite":
                 {
                     _Provider = XwDbProvider.SQLITE;
@@ -316,7 +330,7 @@ namespace XwMaxLib.Data
             _Command.CommandTimeout = DefaultCommandTimeout;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         private void Open()
         {
             if (_Connection != null)
@@ -341,20 +355,20 @@ namespace XwMaxLib.Data
         }
 
         #region CLEANUP
-        //********************************************************************************
+        //*************************************************************************************************************
         ~XwDbCommand()
         {
             Dispose(false);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         protected virtual void Dispose(bool disposing)
         {
             if (!IsDisposed)
@@ -366,7 +380,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public bool IsDisposed { get; protected set; }
         public void Close(bool kill = false)
         {
@@ -416,14 +430,14 @@ namespace XwMaxLib.Data
             IsDisposed = true;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void Kill()
         {
             Close(true);
         }
         #endregion
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, bool value, bool allowNull = false, bool nullIf = false)
         {
             if (allowNull && value == nullIf)
@@ -432,7 +446,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(bool));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, DateTime value, bool allowNull = true, string nullIf = "0001-01-01T00:00:00")
         {
             if (allowNull && value == DateTime.Parse(nullIf))
@@ -441,7 +455,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(System.DateTime));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, decimal value, bool allowNull = false, decimal nullIf = 0)
         {
             if (allowNull && value == nullIf)
@@ -450,7 +464,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(decimal));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, double value, bool allowNull = false, double nullIf = 0.0)
         {
             if (allowNull && value == nullIf)
@@ -459,7 +473,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(double));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, short value, bool allowNull = false, short nullIf = 0)
         {
             if (allowNull && value == nullIf)
@@ -468,7 +482,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(short));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, int value, bool allowNull = false, int nullIf = 0)
         {
             if (allowNull && value == nullIf)
@@ -477,7 +491,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(int));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, long value, bool allowNull = false, long nullIf = 0)
         {
             if (allowNull && value == nullIf)
@@ -486,8 +500,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(long));
         }
 
-
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, Guid value, bool allowNull = false, string nullIf = "00000000-0000-0000-0000-000000000000")
         {
             if (allowNull && value == Guid.Parse(nullIf))
@@ -496,7 +509,7 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(System.Guid));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, string value, bool allowNull = false, string nullIf = "")
         {
             if (allowNull && value == nullIf)
@@ -505,13 +518,13 @@ namespace XwMaxLib.Data
                 AddParameter(name, value, typeof(string));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void AddParameter(string name, byte[] value)
         {
             AddParameter(name, value, typeof(byte));
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         private void AddParameter(string name, object value, Type type)
         {
             XwDbValue val = new XwDbValue(value, type);
@@ -539,6 +552,15 @@ namespace XwMaxLib.Data
                     _Command.Parameters.Add(param);
                 }
                 break;
+                case XwDbProvider.PGSQL:
+                {
+                    if (_Command == null)
+                        _Command = new NpgsqlCommand();
+                    NpgsqlParameter param = new NpgsqlParameter(name, val.GetPGSqlType());
+                    param.Value = val.ToDbValue();
+                    _Command.Parameters.Add(param);
+                }
+                break;
                 case XwDbProvider.SQLITE:
                 {
                     if (_Command == null)
@@ -555,7 +577,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         private string FormatValue(object value, bool autoQuote = true)
         {
             if (value == null || value is DBNull)
@@ -637,7 +659,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void ExecuteSP(string command, bool resetAfterExec = true)
         {
             _Command.CommandType = CommandType.StoredProcedure;
@@ -648,7 +670,7 @@ namespace XwMaxLib.Data
                 _Profiler.Stop($"DB:{command}");
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void ExecuteTX(string command, bool resetAfterExec = true)
         {
             _Command.CommandType = CommandType.Text;
@@ -660,7 +682,7 @@ namespace XwMaxLib.Data
                 _Profiler.Stop($"DB:{commandBlock}");
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public void ExecuteMK(bool resetAfterExec = true)
         {
             _Command.CommandType = CommandType.Text;
@@ -673,7 +695,7 @@ namespace XwMaxLib.Data
                 _Profiler.Stop($"DB:{commandBlock}");
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         private void Execute(string command, bool resetAfterExec)
         {
             try
@@ -729,6 +751,13 @@ namespace XwMaxLib.Data
                                         adapter.Fill(_DataSet);
                                     }
                                     break;
+                                    case XwDbProvider.PGSQL:
+                                    {
+                                        NpgsqlDataAdapter adapter = new NpgsqlDataAdapter((NpgsqlCommand)_Command);
+                                        _DataSet = new DataSet();
+                                        adapter.Fill(_DataSet);
+                                    }
+                                    break;
                                     case XwDbProvider.SQLITE:
                                     {
                                         SQLiteDataAdapter adapter = new SQLiteDataAdapter((SQLiteCommand)_Command);
@@ -742,25 +771,7 @@ namespace XwMaxLib.Data
                             break;
                             case XwDbMode.DataReader:
                             {
-                                //switch just in case of future differences... maybe i will remove it if 
-                                switch (_Provider)
-                                {
-                                    case XwDbProvider.MSSQL:
-                                    {
-                                        _DataReader = _Command.ExecuteReader();
-                                    }
-                                    break;
-                                    case XwDbProvider.MYSQL:
-                                    {
-                                        _DataReader = _Command.ExecuteReader();
-                                    }
-                                    break;
-                                    case XwDbProvider.SQLITE:
-                                    {
-                                        _DataReader = _Command.ExecuteReader();
-                                    }
-                                    break;
-                                }
+                                _DataReader = _Command.ExecuteReader();
                             }
                             break;
                         }
@@ -809,7 +820,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public string GetDebugCommand()
         {
             if (DebugCommand == string.Empty)
@@ -818,7 +829,7 @@ namespace XwMaxLib.Data
             return DebugCommand;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         private string GetTextCommand()
         {
             string command = string.Empty;
@@ -849,6 +860,18 @@ namespace XwMaxLib.Data
                         command += ");";
                     }
                     break;
+                    case XwDbProvider.PGSQL:
+                    {
+                        command += "CALL ";
+                        command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + "(";
+                        for (int i = 0; i < _Command.Parameters.Count; i++)
+                        {
+                            if (i > 0) command += ",";
+                            command += $"{FormatValue(_Command.Parameters[i].Value)}";
+                        }
+                        command += ");";
+                    }
+                    break;
                     default:
                         command = $"COMMAND NOT GENERATED FOR PROVIDER: {_Provider}";
                         break;
@@ -866,7 +889,7 @@ namespace XwMaxLib.Data
             return command;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public bool ReturnedData
         {
             get
@@ -890,7 +913,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public int RowCount
         {
             get
@@ -920,7 +943,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public bool Read()
         {
             switch (Mode)
@@ -949,18 +972,19 @@ namespace XwMaxLib.Data
             return false;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public DataSet GetDataSet()
         {
             return _DataSet;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbValue Value(string name)
         {
             return Value(GetOrdinal(name));
         }
-        //********************************************************************************
+
+        //*************************************************************************************************************
         public XwDbValue Value(int index)
         {
             switch (Mode)
@@ -979,7 +1003,7 @@ namespace XwMaxLib.Data
             throw new Exception($"Unable to get Value for index [{index}]");
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public int GetOrdinal(string name)
         {
             int index = -1;
@@ -1010,7 +1034,7 @@ namespace XwMaxLib.Data
             return index;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public bool TableExists(string tableName)
         {
             string command = string.Empty;
@@ -1033,7 +1057,7 @@ namespace XwMaxLib.Data
             return false;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         //Oh boy this is bad. Have to find another way to do this.
         public bool ColumnExists(string tableName, string columnName)
         {
@@ -1062,28 +1086,28 @@ namespace XwMaxLib.Data
         }
     }
 
-    //**************************************************************************************************************
-    //**************************************************************************************************************
-    //**************************************************************************************************************
+    //*****************************************************************************************************************
+    //*****************************************************************************************************************
+    //*****************************************************************************************************************
     public class XwDbValue
     {
         private object _Value;
         private Type _Type;
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbValue(object value, Type type = null)
         {
             _Value = value;
             _Type = type ?? value.GetType();
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public new Type GetType()
         {
             return _Type;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public SqlDbType GetSqlType()
         {
             if (_Type == typeof(Guid))
@@ -1106,7 +1130,7 @@ namespace XwMaxLib.Data
             throw new Exception($"Unknown data type {_Type}");
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public MySqlDbType GetMySqlType()
         {
             if (_Type == typeof(Guid))
@@ -1129,7 +1153,30 @@ namespace XwMaxLib.Data
             throw new Exception($"Unknown data type {_Type}");
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
+        public NpgsqlDbType GetPGSqlType()
+        {
+            if (_Type == typeof(Guid))
+                return NpgsqlDbType.Uuid;
+            else if (_Type == typeof(string))
+                return NpgsqlDbType.Varchar;
+            else if (_Type == typeof(double))
+                return NpgsqlDbType.Double;
+            else if (_Type == typeof(int))
+                return NpgsqlDbType.Integer;
+            else if (_Type == typeof(long))
+                return NpgsqlDbType.Bigint;
+            else if (_Type == typeof(DateTime))
+                return NpgsqlDbType.Date;
+            else if (_Type == typeof(bool))
+                return NpgsqlDbType.Bit;
+            else if (_Type == typeof(byte))
+                return NpgsqlDbType.Varbit;
+
+            throw new Exception($"Unknown data type {_Type}");
+        }
+
+        //*************************************************************************************************************
         public DbType GetSQLiteType()
         {
             if (_Type == typeof(Guid))
@@ -1152,8 +1199,7 @@ namespace XwMaxLib.Data
             throw new Exception($"Unknown data type {_Type}");
         }
 
-
-        //********************************************************************************
+        //*************************************************************************************************************
         public bool IsNULL()
         {
             if (_Value == null)
@@ -1163,24 +1209,15 @@ namespace XwMaxLib.Data
             return false;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public object ToDbValue()
         {
             if (_Value == null)
                 return DBNull.Value;
-
-            /*
-            if (_Type == typeof(System.Guid) && (Guid)_Value == Guid.Empty)
-                return DBNull.Value;
-
-            if (_Type == typeof(System.DateTime) && (DateTime)_Value == DateTime.MinValue)
-                return DBNull.Value;
-            */
-
             return _Value;
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public bool ToBoolean(bool defaultValue = false, bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1189,7 +1226,7 @@ namespace XwMaxLib.Data
             return Convert.ToBoolean(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public decimal ToDecimal(decimal defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1198,7 +1235,7 @@ namespace XwMaxLib.Data
             return Convert.ToDecimal(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public double ToDouble(double defaultValue = 0.0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1207,7 +1244,7 @@ namespace XwMaxLib.Data
             return Convert.ToDouble(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public short ToInt16(short defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1216,7 +1253,7 @@ namespace XwMaxLib.Data
             return Convert.ToInt16(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public int ToInt32(int defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1225,7 +1262,7 @@ namespace XwMaxLib.Data
             return Convert.ToInt32(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public long ToInt64(long defaultValue = 0, bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1234,7 +1271,7 @@ namespace XwMaxLib.Data
             return Convert.ToInt64(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public Guid ToGuid(bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1243,7 +1280,7 @@ namespace XwMaxLib.Data
             return new Guid(obj.ToString());
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public DateTime ToDateTime(bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1252,7 +1289,7 @@ namespace XwMaxLib.Data
             return Convert.ToDateTime(obj);
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public string ToString(string defaultValue = "", bool convertNULLs = true)
         {
             object obj = ToDbValue();
@@ -1266,7 +1303,7 @@ namespace XwMaxLib.Data
             return obj.ToString();
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public byte[] ToByteArray()
         {
             object obj = ToDbValue();
@@ -1276,15 +1313,15 @@ namespace XwMaxLib.Data
         }
     }
 
-    //**************************************************************************************************************
-    //**************************************************************************************************************
-    //**************************************************************************************************************
+    //*****************************************************************************************************************
+    //*****************************************************************************************************************
+    //*****************************************************************************************************************
 
     public class XwDbException : DbException
     {
         public string Command = string.Empty;
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbException(Exception innerException) : base(innerException.Message, innerException)
         {
             if (Debugger.IsAttached)
@@ -1296,7 +1333,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public XwDbException(string message) : base(message)
         {
             if (Debugger.IsAttached)
@@ -1308,7 +1345,7 @@ namespace XwMaxLib.Data
             }
         }
 
-        //********************************************************************************
+        //*************************************************************************************************************
         public override string ToString()
         {
             string output = string.Empty;
@@ -1319,6 +1356,5 @@ namespace XwMaxLib.Data
             output += "\r\n---------------------------------------------------------------- \r\n";
             return output;
         }
-
     }
 }

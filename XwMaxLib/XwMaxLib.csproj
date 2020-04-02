@@ -165,6 +165,8 @@
   <ItemGroup>
     <Content Include="DLL\DigestAuthMod.dll" />
     <Content Include="DLL\MySql.Data.dll" />
+    <Content Include="DLL\Npgsql.dll" />
+    <Content Include="DLL\Npgsql.pdb" />
     <Content Include="DLL\SQLite\System.Data.SQLite.dll" />
     <Content Include="DLL\SQLite\x64\SQLite.Interop.dll" />
     <Content Include="DLL\SQLite\x86\SQLite.Interop.dll" />
@@ -221,6 +223,10 @@
     <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=3.2.6.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
