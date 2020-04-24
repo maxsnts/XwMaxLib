@@ -662,36 +662,12 @@ namespace XwMaxLib.Data
         //*************************************************************************************************************
         public void ExecuteSP(string command, bool resetAfterExec = true)
         {
-            switch (_Provider)
-            {
-                case XwDbProvider.PGSQL:
-                {
-                    string cmd = $"CALL {command}(";
-                    for (int i = 0; i < _Command.Parameters.Count; i++)
-                    {
-                        if (i > 0) cmd += ",";
-                        cmd += $"{FormatValue(_Command.Parameters[i].Value)}";
-                    }
-                    cmd += ");";
-
-                    if (_Profiler != null)
-                        _Profiler.Start($"DB:{cmd}");
-                    Execute(cmd, resetAfterExec);
-                    if (_Profiler != null)
-                        _Profiler.Stop($"DB:{cmd}");
-                }
-                break;
-                default:
-                {
-                    _Command.CommandType = CommandType.StoredProcedure;
-                    if (_Profiler != null)
-                        _Profiler.Start($"DB:{command}");
-                    Execute(command, resetAfterExec);
-                    if (_Profiler != null)
-                        _Profiler.Stop($"DB:{command}");
-                }
-                break;
-            }
+            _Command.CommandType = CommandType.StoredProcedure;
+            if (_Profiler != null)
+                _Profiler.Start($"DB:{command}");
+            Execute(command, resetAfterExec);
+            if (_Profiler != null)
+                _Profiler.Stop($"DB:{command}");
         }
 
         //*************************************************************************************************************
@@ -898,7 +874,7 @@ namespace XwMaxLib.Data
                     break;
                     default:
                         command = $"COMMAND NOT GENERATED FOR PROVIDER: {_Provider}";
-                    break;
+                        break;
                 }
             }
             else
@@ -1183,7 +1159,7 @@ namespace XwMaxLib.Data
             if (_Type == typeof(Guid))
                 return NpgsqlDbType.Uuid;
             else if (_Type == typeof(string))
-                return NpgsqlDbType.Text;
+                return NpgsqlDbType.Varchar;
             else if (_Type == typeof(double))
                 return NpgsqlDbType.Double;
             else if (_Type == typeof(int))

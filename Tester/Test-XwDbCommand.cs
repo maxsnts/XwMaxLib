@@ -24,10 +24,6 @@ namespace Tester
                 Console.WriteLine("7 - MYSQL - Make Query (Needs TestDB)");
                 Console.WriteLine("8 - SQLITE - Format Query (Needs TestDB)");
                 Console.WriteLine("9 - Many MySQL Connections (Needs TestDB)");
-                Console.WriteLine("10 - PGSQL - SP - Dataset (Needs TestDB)");
-                Console.WriteLine("11 - PGSQL - SP - DataReader (Needs TestDB)");
-                Console.WriteLine("12 - PGSQL - Format Query (Needs TestDB)");
-
                 Console.ResetColor();
                 Console.Write("Select option: ");
                 string option = Console.ReadLine().Trim();
@@ -66,21 +62,12 @@ namespace Tester
                     case "9":
                         MYSQL_MANY_CONNS();
                         break;
-                    case "10":
-                        PGSQL_SP_DATASET();
-                        break;
-                    case "11":
-                        PGSQL_SP_DATAREADER();
-                        break;
-                    case "12":
-                        PGSQL_FORMAT_QUERY();
-                        break;
                     default:
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Unknown option");
-                    }
-                    break;
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Unknown option");
+                        }
+                        break;
                 }
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -129,10 +116,10 @@ namespace Tester
                 sql.AddParameter("@Name", "%A%");
                 sql.ExecuteTX("SELECT Name FROM Tester WHERE Name LIKE @Name");
                 Console.WriteLine(sql.GetDebugCommand());
-
+                
                 while (sql.Read())
                     Console.WriteLine(sql.Value("Name").ToString());
-
+                
                 sql.AddParameter("@Name", "%A%");
                 sql.ExecuteTX("SELECT TOP 1 Name FROM Tester WHERE Name LIKE @Name");
 
@@ -204,27 +191,30 @@ namespace Tester
         //***********************************************************************************
         static public void SQLITE_FORMAT_QUERY()
         {
-            using (XwDbCommand sql = new XwDbCommand("DBCONN_SQLITE"))
+            using (XwDbCommand sql = new XwDbCommand("DBCONN_LITETEST"))
             {
                 if (!sql.TableExists("Tester"))
                 {
                     sql.ExecuteTX(@"CREATE TABLE [Tester] (
-                    [id] INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    [name] TEXT
+                    [id] TEXT, 
+                    [client] INTEGER,
+                    [objid] INTEGER,
+                    [objtype] TEXT,
+                    [mediatype] TEXT,
+                    [mediaext] TEXT,
+                    PRIMARY KEY (id,objtype,mediatype,client,objid)
                     );");
-
-                    sql.ExecuteTX("INSERT INTO Tester (name) VALUES ('A')");
-                    sql.ExecuteTX("INSERT INTO Tester (name) VALUES ('B')");
-                    sql.ExecuteTX("INSERT INTO Tester (name) VALUES ('C')");
                 }
 
+                /*
                 sql.AddParameter("@Name", "%A%");
                 sql.ExecuteTX("SELECT * FROM Tester WHERE Name LIKE @Name");
-                Console.WriteLine(sql.GetDebugCommand());
+                Console.WriteLine(sql.GetTextCommand());
                 while (sql.Read())
                 {
                     Console.WriteLine(sql.Value("Name").ToString());
                 }
+                */
             }
         }
 
@@ -247,51 +237,5 @@ namespace Tester
             }
         }
 
-
-        //***********************************************************************************
-        static public void PGSQL_SP_DATASET()
-        {
-            using (XwDbCommand sql = new XwDbCommand("DBCONN_PGTEST"))
-            {
-                sql.Mode = XwDbMode.DataSet;
-                sql.AddParameter("name", "");
-                sql.ExecuteSP("testsp");
-                Console.WriteLine(sql.GetDebugCommand());
-                while (sql.Read())
-                {
-                    Console.WriteLine(sql.Value("name").ToString());
-                }
-            }
-        }
-
-        //***********************************************************************************
-        static public void PGSQL_SP_DATAREADER()
-        {
-            using (XwDbCommand sql = new XwDbCommand("DBCONN_PGTEST"))
-            {
-                sql.Mode = XwDbMode.DataReader;
-                sql.AddParameter("name", "%C%");
-                sql.ExecuteSP("testsp");
-                Console.WriteLine(sql.GetDebugCommand());
-                while (sql.Read())
-                {
-                    Console.WriteLine(sql.Value("name").ToString());
-                }
-            }
-        }
-
-        //***********************************************************************************
-        static public void PGSQL_FORMAT_QUERY()
-        {
-            using (XwDbCommand sql = new XwDbCommand("DBCONN_PGTEST"))
-            {
-                sql.AddParameter("@Name", "%A%");
-                sql.ExecuteTX(@"SELECT * FROM tester WHERE name LIKE '%C%'");
-                Console.WriteLine(sql.GetDebugCommand());
-
-                while (sql.Read())
-                    Console.WriteLine(sql.Value("name").ToString());
-            }
-        }
     }
 }
