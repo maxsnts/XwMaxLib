@@ -34,14 +34,14 @@ namespace XwMaxLib.IO
         }
 
         //********************************************************************************************************
-        public static Int64 GetDiskFreeSpace(string path)
+        public static long GetDiskFreeSpace(string path)
         {
             DriveInfo drive = new DriveInfo(path);
             return drive.TotalFreeSpace;
         }
 
         //********************************************************************************************************
-        public static Int64 GetDiskFreeSpaceInMb(string path)
+        public static long GetDiskFreeSpaceInMb(string path)
         {
             return GetDiskFreeSpace(path) / 1024 / 1024;
         }
@@ -51,13 +51,13 @@ namespace XwMaxLib.IO
         {
             string size = "0 Bytes";
             if (byteCount >= (1024 * 1024 * 1024))
-                size = String.Format("{0:##.00}", byteCount / (1024 * 1024 * 1024)) + " Gb";
+                size = string.Format("{0:##.00}", byteCount / (1024 * 1024 * 1024)) + " Gb";
             else if (byteCount >= (1024 * 1024))
-                size = String.Format("{0:##.00}", byteCount / (1024 * 1024)) + " Mb";
+                size = string.Format("{0:##.00}", byteCount / (1024 * 1024)) + " Mb";
             else if (byteCount >= 1024)
-                size = String.Format("{0:##.00}", byteCount / 1024) + " Kb";
+                size = string.Format("{0:##.00}", byteCount / 1024) + " Kb";
             else if (byteCount < 1024)
-                size = String.Format("{0:##}", byteCount) + " By";
+                size = string.Format("{0:##}", byteCount) + " By";
 
             return size;
         }

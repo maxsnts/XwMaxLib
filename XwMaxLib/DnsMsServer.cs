@@ -27,7 +27,7 @@ namespace XwMaxLib.DNS
         private string GetDNSServerName()
         {
             ManagementObject oServer = wmi.GetObject("MicrosoftDNS_Server.Name=\".\"");
-            return oServer["Name"] as String;
+            return oServer["Name"] as string;
         }
     }
 }

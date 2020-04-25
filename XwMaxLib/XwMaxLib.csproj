@@ -61,6 +61,7 @@
     <Compile Include="Extentions\MyExtensionRectangle.cs" />
     <Compile Include="Extentions\MyExtensionString.cs" />
     <Compile Include="IO\Drive.cs" />
+    <Compile Include="IO\XwConcurrentFile.cs" />
     <Compile Include="IO\Zip.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Mail.cs" />
