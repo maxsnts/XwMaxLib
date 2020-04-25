@@ -1,6 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Npgsql;
-using NpgsqlTypes;
 using System;
 using System.Configuration;
 using System.Data;
@@ -28,7 +26,6 @@ namespace XwMaxLib.Data
     {
         MSSQL,
         MYSQL,
-        PGSQL,
         SQLITE
     }
 
@@ -262,11 +259,6 @@ namespace XwMaxLib.Data
                     _Command = new MySqlCommand();
                 }
                 break;
-                case XwDbProvider.PGSQL:
-                {
-                    _Command = new NpgsqlCommand();
-                }
-                break;
                 case XwDbProvider.SQLITE:
                 {
                     _Command = new SQLiteCommand();
@@ -308,12 +300,6 @@ namespace XwMaxLib.Data
                 {
                     _Provider = XwDbProvider.MYSQL;
                     _Connection = new MySqlConnection(connection);
-                }
-                break;
-                case "Npgsql":
-                {
-                    _Provider = XwDbProvider.PGSQL;
-                    _Connection = new NpgsqlConnection(connection);
                 }
                 break;
                 case "Data.SQLite":
@@ -552,15 +538,6 @@ namespace XwMaxLib.Data
                     _Command.Parameters.Add(param);
                 }
                 break;
-                case XwDbProvider.PGSQL:
-                {
-                    if (_Command == null)
-                        _Command = new NpgsqlCommand();
-                    NpgsqlParameter param = new NpgsqlParameter(name, val.GetPGSqlType());
-                    param.Value = val.ToDbValue();
-                    _Command.Parameters.Add(param);
-                }
-                break;
                 case XwDbProvider.SQLITE:
                 {
                     if (_Command == null)
@@ -751,13 +728,6 @@ namespace XwMaxLib.Data
                                         adapter.Fill(_DataSet);
                                     }
                                     break;
-                                    case XwDbProvider.PGSQL:
-                                    {
-                                        NpgsqlDataAdapter adapter = new NpgsqlDataAdapter((NpgsqlCommand)_Command);
-                                        _DataSet = new DataSet();
-                                        adapter.Fill(_DataSet);
-                                    }
-                                    break;
                                     case XwDbProvider.SQLITE:
                                     {
                                         SQLiteDataAdapter adapter = new SQLiteDataAdapter((SQLiteCommand)_Command);
@@ -849,18 +819,6 @@ namespace XwMaxLib.Data
                     }
                     break;
                     case XwDbProvider.MYSQL:
-                    {
-                        command += "CALL ";
-                        command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + "(";
-                        for (int i = 0; i < _Command.Parameters.Count; i++)
-                        {
-                            if (i > 0) command += ",";
-                            command += $"{FormatValue(_Command.Parameters[i].Value)}";
-                        }
-                        command += ");";
-                    }
-                    break;
-                    case XwDbProvider.PGSQL:
                     {
                         command += "CALL ";
                         command += ((_Command.CommandText == "") ? "[EXECUTE NOT CALLED]" : _Command.CommandText) + "(";
@@ -1149,29 +1107,6 @@ namespace XwMaxLib.Data
                 return MySqlDbType.Bit;
             else if (_Type == typeof(byte))
                 return MySqlDbType.Binary;
-
-            throw new Exception($"Unknown data type {_Type}");
-        }
-
-        //*************************************************************************************************************
-        public NpgsqlDbType GetPGSqlType()
-        {
-            if (_Type == typeof(Guid))
-                return NpgsqlDbType.Uuid;
-            else if (_Type == typeof(string))
-                return NpgsqlDbType.Varchar;
-            else if (_Type == typeof(double))
-                return NpgsqlDbType.Double;
-            else if (_Type == typeof(int))
-                return NpgsqlDbType.Integer;
-            else if (_Type == typeof(long))
-                return NpgsqlDbType.Bigint;
-            else if (_Type == typeof(DateTime))
-                return NpgsqlDbType.Date;
-            else if (_Type == typeof(bool))
-                return NpgsqlDbType.Bit;
-            else if (_Type == typeof(byte))
-                return NpgsqlDbType.Varbit;
 
             throw new Exception($"Unknown data type {_Type}");
         }
