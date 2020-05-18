@@ -48,12 +48,12 @@ namespace Tester
         //***********************************************************************************
         static public void TestXwConcurrentFile()
         {
-            XwConcurrentFile.Clear("c:\\data\\test.log");
-            for (int i = 0; i < 3000; i++)
+            XwConcurrentBufferedFiles.Clear("c:\\data\\test.log");
+            for (int i = 0; i < 5000; i++)
             {
-                Console.Write($"{i.ToString()}");
-                XwConcurrentFile.Write("c:\\data\\test.log", "Lets hope this solves the problem...\r\n");
-                Thread.Sleep(100);
+                //Console.Write($"{i.ToString()}");
+                XwConcurrentBufferedFiles.Write($"c:\\data\\xwtest\\test{i}.log", "Lets hope this solves the problem...\r\n");
+                Thread.Sleep(10);
             }
         }
     }

@@ -893,11 +893,13 @@ namespace XwMaxLib.Data
                             dataTable.Load(_DataReader);
                             _DataSet = new DataSet();
                             _DataSet.Tables.Add(dataTable);
-                            return dataTable.Rows.Count;
+                            int cnt = dataTable.Rows.Count;
+                            //Mode = XwDbMode.DataReader;
+                            return cnt;
                         }
                     }
                 }
-                return 0;
+                throw new Exception("RowCount not available");
             }
         }
 

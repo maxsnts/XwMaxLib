@@ -85,9 +85,13 @@ namespace Tester
                 sql.AddParameter("@Name", "%C%");
                 sql.ExecuteSP("TestSP");
                 Console.WriteLine(sql.GetDebugCommand());
-                while (sql.Read())
+                if (sql.ReturnedData)
                 {
-                    Console.WriteLine(sql.Value("Name").ToString());
+                    Console.WriteLine($"CNT: {sql.RowCount}");
+                    while (sql.Read())
+                    {
+                        Console.WriteLine(sql.Value("Name").ToString());
+                    }
                 }
             }
         }
@@ -101,9 +105,13 @@ namespace Tester
                 sql.AddParameter("@Name", "%C%");
                 sql.ExecuteSP("TestSP");
                 Console.WriteLine(sql.GetDebugCommand());
-                while (sql.Read())
+                if (sql.ReturnedData)
                 {
-                    Console.WriteLine(sql.Value("Name").ToString());
+                    Console.WriteLine($"CNT: {sql.RowCount}");
+                    while (sql.Read())
+                    {
+                        Console.WriteLine(sql.Value("Name").ToString());
+                    }
                 }
             }
         }
