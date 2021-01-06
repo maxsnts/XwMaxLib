@@ -60,6 +60,24 @@ namespace XwMaxLib.Extensions
         }
 
         //*************************************************************************************************
+        public static bool ToBool(this string value)
+        {
+            switch (value)
+            {
+                case "on":
+                case "On":
+                case "ON":
+                    return true;
+                case "off":
+                case "Off":
+                case "OFF":
+                    return false;
+                default:
+                    return bool.Parse(value);
+            }
+        }
+
+        //*************************************************************************************************
         public static string Left(this string s, int chars)
         {
             if (s.Length <= chars)
