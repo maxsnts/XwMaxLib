@@ -166,9 +166,7 @@
   <ItemGroup>
     <Content Include="DLL\DigestAuthMod.dll" />
     <Content Include="DLL\MySql.Data.dll" />
-    <Content Include="DLL\SQLite\System.Data.SQLite.dll" />
-    <Content Include="DLL\SQLite\x64\SQLite.Interop.dll" />
-    <Content Include="DLL\SQLite\x86\SQLite.Interop.dll" />
+    <Content Include="DLL\System.Data.SQLite.dll" />
     <Content Include="Resources\cat_right.gif" />
     <Content Include="Resources\Caution.ico" />
     <Content Include="Resources\DownArrow.ico" />
@@ -229,9 +227,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+    <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLL\SQLite\System.Data.SQLite.dll</HintPath>
+      <HintPath>DLL\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
@@ -265,6 +263,7 @@
   <ItemGroup>
     <None Include="XwMaxLib.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -24,6 +24,7 @@ namespace Tester
                 Console.WriteLine("7 - MYSQL - Make Query (Needs TestDB)");
                 Console.WriteLine("8 - SQLITE - Format Query (Needs TestDB)");
                 Console.WriteLine("9 - Many MySQL Connections (Needs TestDB)");
+                Console.WriteLine("10 - SQLITE - Change password");
                 Console.ResetColor();
                 Console.Write("Select option: ");
                 string option = Console.ReadLine().Trim();
@@ -61,6 +62,9 @@ namespace Tester
                         break;
                     case "9":
                         MYSQL_MANY_CONNS();
+                        break;
+                    case "10":
+                        SQLITE_CHANGE_PASSWORD();
                         break;
                     default:
                         {
@@ -223,6 +227,15 @@ namespace Tester
                     Console.WriteLine(sql.Value("Name").ToString());
                 }
                 */
+            }
+        }
+
+        //***********************************************************************************
+        static public void SQLITE_CHANGE_PASSWORD()
+        {
+            using (XwDbCommand sql = new XwDbCommand("DBCONN_LITETEST"))
+            {
+                sql.ChangePassword("test");
             }
         }
 
