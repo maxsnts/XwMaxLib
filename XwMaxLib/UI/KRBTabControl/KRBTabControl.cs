@@ -103,7 +103,7 @@ namespace KRBTabControlNS.CustomTab
         private TabAlignments _alignments = TabAlignments.Top;          //Initializer
         private TabHeaderStyle _headerStyle = TabHeaderStyle.Solid;     //Initializer
         private UpDown32Style _upDownStyle = UpDown32Style.BlackGlass;  //Initializer
-        public TabCloseImage _tabCloseBtn = TabCloseImage.Normal;      //Initializer
+        public TabCloseImage _tabCloseBtn = TabCloseImage.Normal;       //Initializer
         private bool _mouseImgProcessing = true;                        //Initializer
         private Cursor _myCursor = null;                                //Initializer
         private Image _backgroundImage = null;                          //Initializer
