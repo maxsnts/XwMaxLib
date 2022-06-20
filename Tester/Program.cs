@@ -6,6 +6,7 @@ namespace Tester
     partial class Program
     {
         //***********************************************************************************
+        [STAThread]
         static void Main(string[] args)
         {
             while(true)
@@ -22,6 +23,7 @@ namespace Tester
                 Console.WriteLine("5 - Test Rectangle");
                 Console.WriteLine("6 - Test MLS");
                 Console.WriteLine("7 - Test XwConcurrentFile");
+                Console.WriteLine("8 - Test UI");
                 Console.ResetColor();
                 Console.Write("Select option: ");
                 string option = Console.ReadLine().Trim();
@@ -53,6 +55,9 @@ namespace Tester
                             break;
                         case "7":
                             MenuXwConcurrentFile();
+                            break;
+                        case "8":
+                            MenuUI();
                             break;
                         default:
                             {

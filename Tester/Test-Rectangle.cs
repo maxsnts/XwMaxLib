@@ -13,7 +13,7 @@ namespace Tester
                 Console.ResetColor();
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("------------------------- DNS ---------------------------");
+                Console.WriteLine("------------------------- Rectangle ---------------------------");
                 Console.WriteLine("0 - Main Menu");
                 Console.WriteLine("1 - Open Test Form");
                 Console.ResetColor();
@@ -28,7 +28,7 @@ namespace Tester
                     case "0":
                         return;
                     case "1":
-                        OPEN_FORM();
+                        OPEN_TAB_FORM();
                         break;
                     default:
                         {
@@ -45,7 +45,7 @@ namespace Tester
         }
 
         //***********************************************************************************
-        static public void OPEN_FORM()
+        static public void OPEN_TAB_FORM()
         {
             Test_Rectangle_Form form = new Test_Rectangle_Form();
             form.ShowDialog();

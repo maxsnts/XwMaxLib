@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Threading;
-using XwMaxLib.IO;
+using XwMaxLib.DNS;
 
 namespace Tester
 {
     partial class Program
     {
         //***********************************************************************************
-        static public void MenuXwConcurrentFile()
+        static public void MenuUI()
         {
             while (true)
             {
                 Console.ResetColor();
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("--------------------- XwComcurrentFile ---------------------------");
+                Console.WriteLine("------------------------- UI ---------------------------");
                 Console.WriteLine("0 - Main Menu");
-                Console.WriteLine("1 - Test");
+                Console.WriteLine("1 - Open Test Form");
                 Console.ResetColor();
                 Console.Write("Select option: ");
                 string option = Console.ReadLine().Trim();
@@ -29,7 +28,7 @@ namespace Tester
                     case "0":
                         return;
                     case "1":
-                        TestXwConcurrentFile();
+                        OPEN_FORM();
                         break;
                     default:
                         {
@@ -46,16 +45,11 @@ namespace Tester
         }
 
         //***********************************************************************************
-        // Testing sequential write only
-        static public void TestXwConcurrentFile()
+        static public void OPEN_FORM()
         {
-            XwConcurrentBufferedFiles.Clear("c:\\data\\test.log");
-            for (int i = 0; i < 5000; i++)
-            {
-                //Console.Write($"{i.ToString()}");
-                XwConcurrentBufferedFiles.Write($"c:\\data\\xwtest\\test{i}.log", "Lets hope this solves the problem...\r\n");
-                Thread.Sleep(10);
-            }
+            Test_Tab_Form form = new Test_Tab_Form();
+            form.ShowDialog();
         }
+
     }
 }
